@@ -1,0 +1,11 @@
+{
+  "name": "chatapp-backend",
+  "version": "1.0.0",
+  "description": "project made by suyash tiwari",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "suyash tiwari",
+  "license": "ISC"
+}
