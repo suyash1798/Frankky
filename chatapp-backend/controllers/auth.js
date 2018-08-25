@@ -2,6 +2,9 @@ const Joi = require('joi');
 const HttpStatus = require('http-status-codes');
 const User = require('../models/userModels');
 const Helpers = require('../Helpers/helpers');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const dbConfig = require('../config/secret');
 
 module.exports = {
   async CreateUser(req,res){
@@ -28,5 +31,27 @@ module.exports = {
     if(userName){
         return res.status(HttpStatus.CONFLICT).json({message:'username already exists'});
     }
+
+    return bcrypt.hash(value.password,10,(err,hash)=>{
+        if(err){
+            return res
+                .status(HttpStatus.BAD_REQUEST)
+                .json({message:'Error handling password'});
+        }
+        const body = {
+          username: Helpers.firstUpper(value.username),
+          email: Helpers.lowerCase(value.email),
+          password:hash
+        };
+        User.create(body).then(user=>{
+            const token = jwt.sign({data:user},dbConfig.secret,{
+               expiresIn: 120
+            });
+            res.cookie('auth',token);
+           res.status(HttpStatus.CREATED).json({message:'User created successfully',user,token});
+        }).catch(err => {
+            res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({message:'Error occured'});
+        });
+    });
   }
 };
