@@ -9,6 +9,7 @@ import {AuthRoutingModule} from './modules/auth-routing.module';
   declarations: [
     AppComponent,
 
+
   ],
   imports: [
     BrowserModule,

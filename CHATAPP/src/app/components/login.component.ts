@@ -10,8 +10,8 @@ import { Component, OnInit } from '@angular/core';
           <form class="col s12">
             <div class="row">
               <div class="input-field col s12">
-                <input id="user_name" type="text">
-                <label for="user_name">UserName</label>
+                <input id="user-name" type="text">
+                <label for="user-name">UserName</label>
               </div>
             </div>
             <div class="row">
@@ -20,7 +20,7 @@ import { Component, OnInit } from '@angular/core';
                 <label for="password">Password</label>
               </div>
             </div>
-            <button class="btn waves-effect" id="signupbtn">
+            <button class="btn waves-effect" id="loginbtn">
               Login
             </button>
           </form>
