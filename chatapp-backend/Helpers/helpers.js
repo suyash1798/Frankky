@@ -1,3 +1,8 @@
+/*
+* Created By Suyash Tiwari
+* on 5 August 2018
+*/
+
 module.exports = {
     firstUpper: username => {
         const name = username.toLowerCase();

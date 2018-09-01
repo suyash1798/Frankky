@@ -1,3 +1,8 @@
+/*
+* Created By Suyash Tiwari
+* on 5 August 2018
+*/
+
 const mongoose = require('mongoose');
 
 const userSchema = mongoose.Schema({
