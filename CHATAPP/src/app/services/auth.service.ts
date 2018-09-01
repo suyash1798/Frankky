@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs';
 
-const BASEURL = 'http://loaclhost:3000/api/chatapp';
+const BASEURL = 'http://localhost:3000/api/chatapp';//http://localhost:3000/api/chatapp/register
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +13,6 @@ export class AuthService {
   }
 
   registerUser(body): Observable<any> {
-    return this.http.post(`${BASEURL}/register`, body);
+    return this.http.post(BASEURL + '/register', body);
   }
 }

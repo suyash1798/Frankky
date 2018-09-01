@@ -1,3 +1,8 @@
+/*
+* Created By Suyash Tiwari
+* on 25 Aug 2018
+*/
+
 import {Component, OnInit} from '@angular/core';
 import * as Material from 'materialize-css';
 
@@ -53,7 +58,7 @@ import * as Material from 'materialize-css';
     }
     
     .auth-content{
-      height: 503px !important;
+      height: 515px !important;
     }
   `]
 })

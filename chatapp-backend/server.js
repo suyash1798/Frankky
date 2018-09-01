@@ -28,7 +28,12 @@ mongoose.connect(dbConfig.url,{ useNewUrlParser: true } );
 
 const auth = require('./routes/authRoutes');
 
-app.use('/api/chatapp',auth);
+app.use('/api/chatapp',auth,(res,req)=>{
+    console.log('worked');
+});
+app.use('/server',(res,req)=>{
+   console.log("worked");
+});
 
 
 app.listen(3000, () => {

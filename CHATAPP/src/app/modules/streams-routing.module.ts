@@ -1,17 +1,17 @@
 /*
 * Created By Suyash Tiwari
-* on 25 Aug 2018
+* on 1 september 2018
 */
-
-import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import {RouterModule, Routes} from '@angular/router';
 import {AuthTabsComponent} from '../components/auth-tabs.component';
+import {StreamsComponent} from '../components/streams.component';
 
 const routes: Routes = [
   {
-    path: '',
-    component: AuthTabsComponent
+    path: 'streams',
+    component: StreamsComponent
   }
 ];
 
@@ -22,5 +22,4 @@ const routes: Routes = [
   exports: [RouterModule],
   declarations: []
 })
-export class AuthRoutingModule {
-}
+export class StreamsRoutingModule { }

@@ -1,6 +1,12 @@
+/*
+* Created By Suyash Tiwari
+* on 25 Aug 2018
+*/
 import {Component, OnInit} from '@angular/core';
 import {AuthService} from '../services/auth.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {map} from 'rxjs/internal/operators';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-signup',
@@ -8,27 +14,42 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
     <div class="container">
       <div class="row">
         <div class="col s10 offset-s1" id="panel">
-          <h1 id="title">Sign Up</h1>
+          <div class="progress" *ngIf="showSpinner">
+            <div class="indeterminate"></div>
+          </div>
+          <h3 id="title">Sign Up</h3>
+          <div id="errorMsg" *ngIf="errorMessage">
+            <span>{{errorMessage}}</span>
+          </div>
           <form class="col s12" [formGroup]="signupForm" novalidate (ngSubmit)="signupUser()">
             <div class="row">
               <div class="input-field col s12">
                 <input id="user_name" type="text" formControlName="username">
                 <label for="user_name">UserName</label>
+                <span class="error" *ngIf="!signupForm.controls['username'].valid && signupForm.controls['username'].touched">
+                    Username is required                  
+                </span>
               </div>
             </div>
             <div class="row">
               <div class="input-field col s12">
                 <input id="email" type="email" formControlName="email">
                 <label for="email">Email</label>
+                <span class="error" *ngIf="!signupForm.controls['email'].valid && signupForm.controls['email'].touched">
+                    Email is required                  
+                </span>
               </div>
             </div>
             <div class="row">
               <div class="input-field col s12">
                 <input id="pass-word" type="password" formControlName="password">
                 <label for="pass-word">Password</label>
+                <span class="error" *ngIf="!signupForm.controls['password'].valid && signupForm.controls['password'].touched">
+                    Password is required                  
+                </span>
               </div>
             </div>
-            <button class="btn waves-effect" id="signupbtn">
+            <button class="btn waves-effect" id="signupbtn" [disabled]="!signupForm.valid" type="submit">
               Sign Up
             </button>
           </form>
@@ -93,13 +114,21 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
       font-size: 15px;
     }
 
+    #errorMsg {
+      background: #f6b2b5;
+      width: 100%;
+      height: 50px;
+      text-align: center;
+    }
   `]
 })
 export class SignupComponent implements OnInit {
 
   signupForm: FormGroup;
+  errorMessage: string;
+  showSpinner: boolean = false;
 
-  constructor(private authService: AuthService, private fb: FormBuilder) {
+  constructor(private authService: AuthService, private fb: FormBuilder, private router: Router) {
   }
 
   ngOnInit() {
@@ -116,9 +145,23 @@ export class SignupComponent implements OnInit {
 
   signupUser() {
     console.log(this.signupForm.value);
+    this.showSpinner = true;
     this.authService.registerUser(this.signupForm.value).subscribe(data => {
-      console.log(data);
-    }, err => console.log(err));
+      this.signupForm.reset();
+      setTimeout(() => {
+        this.router.navigate(['streams']);
+      }, 2000);
+    }, err => {
+      this.showSpinner = false;
+      console.log(err);
+      {
+        // this.errorMessage = err.error.msg[0].message;
+      }
+
+      if (err.error.message) {
+        this.errorMessage = err.error.message;
+      }
+    });
   }
 
 }

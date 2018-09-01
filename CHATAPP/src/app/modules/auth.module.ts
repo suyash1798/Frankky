@@ -1,3 +1,8 @@
+/*
+* Created By Suyash Tiwari
+* on 25 Aug 2018
+*/
+
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {AuthTabsComponent} from '../components/auth-tabs.component';
