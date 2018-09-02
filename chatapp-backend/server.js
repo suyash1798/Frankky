@@ -27,13 +27,10 @@ mongoose.Promise = global.Promise;
 mongoose.connect(dbConfig.url,{ useNewUrlParser: true } );
 
 const auth = require('./routes/authRoutes');
+const posts = require('./routes/postRoutes');
 
-app.use('/api/chatapp',auth,(res,req)=>{
-    console.log('worked');
-});
-app.use('/server',(res,req)=>{
-   console.log("worked");
-});
+app.use('/api/chatapp',auth);
+app.use('/api/chatapp',posts);
 
 
 app.listen(3000, () => {
