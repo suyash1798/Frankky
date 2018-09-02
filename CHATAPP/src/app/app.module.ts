@@ -5,6 +5,7 @@ import {AuthModule} from './modules/auth.module';
 import {AuthRoutingModule} from './modules/auth-routing.module';
 import {StreamsModule} from './modules/streams.module';
 import {StreamsRoutingModule} from './modules/streams-routing.module';
+import { ToolbarComponent } from './components/toolbar.component';
 
 
 @NgModule({

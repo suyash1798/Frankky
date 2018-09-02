@@ -7,6 +7,7 @@ import {AuthService} from '../services/auth.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {map} from 'rxjs/internal/operators';
 import {Router} from '@angular/router';
+import {TokenService} from '../services/token.service';
 
 @Component({
   selector: 'app-signup',
@@ -128,7 +129,10 @@ export class SignupComponent implements OnInit {
   errorMessage: string;
   showSpinner: boolean = false;
 
-  constructor(private authService: AuthService, private fb: FormBuilder, private router: Router) {
+  constructor(private authService: AuthService,
+              private fb: FormBuilder,
+              private router: Router,
+              private tokenService: TokenService) {
   }
 
   ngOnInit() {
@@ -147,6 +151,7 @@ export class SignupComponent implements OnInit {
     console.log(this.signupForm.value);
     this.showSpinner = true;
     this.authService.registerUser(this.signupForm.value).subscribe(data => {
+      this.tokenService.SetToken(data.token);
       this.signupForm.reset();
       setTimeout(() => {
         this.router.navigate(['streams']);

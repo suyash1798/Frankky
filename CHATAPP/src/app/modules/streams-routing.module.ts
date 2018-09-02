@@ -7,11 +7,13 @@ import { CommonModule } from '@angular/common';
 import {RouterModule, Routes} from '@angular/router';
 import {AuthTabsComponent} from '../components/auth-tabs.component';
 import {StreamsComponent} from '../components/streams.component';
+import {AuthGuard} from '../guards/auth.guard';
 
 const routes: Routes = [
   {
     path: 'streams',
-    component: StreamsComponent
+    component: StreamsComponent,
+    canActivate: [AuthGuard]
   }
 ];
 
