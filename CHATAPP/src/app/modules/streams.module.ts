@@ -12,10 +12,15 @@ import {ToolbarComponent} from '../components/toolbar.component';
 import { SideComponent } from '../components/side.component';
 import { PostFormComponent } from '../components/post-form.component';
 import { PostsComponent } from '../components/posts.component';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {HttpClient, HttpClientModule} from '@angular/common/http';
 
 @NgModule({
   imports: [
-    CommonModule
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    HttpClientModule
   ],
   declarations: [StreamsComponent,
     ToolbarComponent,

@@ -5,7 +5,10 @@ import {AuthModule} from './modules/auth.module';
 import {AuthRoutingModule} from './modules/auth-routing.module';
 import {StreamsModule} from './modules/streams.module';
 import {StreamsRoutingModule} from './modules/streams-routing.module';
-import { ToolbarComponent } from './components/toolbar.component';
+import {ToolbarComponent} from './components/toolbar.component';
+import {CookieService} from 'ngx-cookie-service';
+import {HTTP_INTERCEPTORS} from '@angular/common/http';
+import {TokenInterceptor} from './services/token-interceptor';
 
 
 @NgModule({
@@ -19,7 +22,14 @@ import { ToolbarComponent } from './components/toolbar.component';
     StreamsModule,
     StreamsRoutingModule,
   ],
-  providers: [],
+  providers: [
+    CookieService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {
