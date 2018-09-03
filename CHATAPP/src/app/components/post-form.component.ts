@@ -2,7 +2,9 @@
 * Created By Suyash Tiwari
 * on 2 Sept 2018
 */
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {PostService} from '../services/post.service';
 
 @Component({
   selector: 'app-post-form',
@@ -11,9 +13,9 @@ import { Component, OnInit } from '@angular/core';
       <div class="col s12 m12 l10">
         <div class="card postDiv">
           <div class="card-content">
-            <form>
+            <form [formGroup]="postForm" novalidate (ngSubmit)="submitPost()">
               <div class="formDiv">
-                <textarea id="textarea1" class="materialize-textarea"></textarea>
+                <textarea id="textarea1" formControlName="post" class="materialize-textarea"></textarea>
                 <div class="file-field input-field">
                   <div class="row">
                     <div class="col s6">
@@ -72,9 +74,24 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PostFormComponent implements OnInit {
 
-  constructor() { }
+  postForm: FormGroup;
 
-  ngOnInit() {
+  constructor(private fb: FormBuilder, private postService: PostService) {
   }
 
+  ngOnInit() {
+    this.init();
+  }
+
+  init() {
+    this.postForm = this.fb.group({
+      post: ['', Validators.required]
+    });
+  }
+
+  submitPost() {
+    this.postService.addPost(this.postForm.value).subscribe((data) => {
+      console.log(data);
+    });
+  }
 }

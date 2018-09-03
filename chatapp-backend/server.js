@@ -1,3 +1,7 @@
+/*
+* Created By Suyash Tiwari
+* on 5 August 2018
+*/
 const express = require('express');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
@@ -6,10 +10,7 @@ const cors = require('cors');
 const app = express();
 
 app.use(cors());
-// app.use(res,req,()=>{
-//     console.log('worked');
-//     next();
-// });
+
 const dbConfig = require('./config/secret');
 
 app.use(express.json({limit:'50mb'}));
@@ -22,18 +23,16 @@ app.use((req, res, next)  => {
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
-// app.use(logger('dev'));
+
 mongoose.Promise = global.Promise;
+
 mongoose.connect(dbConfig.url,{ useNewUrlParser: true } );
 
 const auth = require('./routes/authRoutes');
+const posts = require('./routes/postRoutes');
 
-app.use('/api/chatapp',auth,(res,req)=>{
-    console.log('worked');
-});
-app.use('/server',(res,req)=>{
-   console.log("worked");
-});
+app.use('/api/chatapp',auth);
+app.use('/api/chatapp',posts);
 
 
 app.listen(3000, () => {
