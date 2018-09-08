@@ -9,6 +9,8 @@ const router = express.Router();
 const PostCtrl = require('../controllers/posts');
 const AuthHelper = require('../Helpers/AuthHelper');
 
+router.get('/posts',AuthHelper.verifyToken,PostCtrl.GetAllPosts);
+
 router.post('/post/add-post',AuthHelper.verifyToken, PostCtrl.AddPost);
 
 
