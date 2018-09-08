@@ -8,7 +8,7 @@ import {TokenService} from '../services/token.service';
     <nav class="nav-extended">
       <div class="container">
         <div class="nav-wrapper">
-          <a href="#" class="brand-logo">Chat App</a>
+          <a (click)="GoToHome()" href="#" class="brand-logo">Chat App</a>
           <ul id="nav-mobile" class="right hide-on-med-and-down">
             <li><a href="sass.html">Sass</a></li>
             <li><a href="badges.html">Components</a></li>
@@ -165,6 +165,10 @@ export class ToolbarComponent implements OnInit {
   logout() {
     this.tokenService.DeleteToken();
     this.router.navigate(['']);
+  }
+
+  GoToHome(){
+    this.router.navigate(['streams']);
   }
 
 }

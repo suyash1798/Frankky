@@ -14,19 +14,23 @@ import { PostFormComponent } from '../components/post-form.component';
 import { PostsComponent } from '../components/posts.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
+import { CommentsComponent } from '../components/comments.component';
+import {RouterModule} from '@angular/router';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    RouterModule
   ],
   declarations: [StreamsComponent,
     ToolbarComponent,
     SideComponent,
     PostFormComponent,
-    PostsComponent],
+    PostsComponent,
+    CommentsComponent],
   exports: [StreamsComponent,
     ToolbarComponent],
   providers: [TokenService, CookieService]

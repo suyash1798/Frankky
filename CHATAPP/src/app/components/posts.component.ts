@@ -6,34 +6,39 @@ import {Component, OnInit} from '@angular/core';
 import {PostService} from '../services/post.service';
 import * as moment from 'moment';
 import io from 'socket.io-client';
+import _ from 'lodash';
+import {TokenService} from '../services/token.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-posts',
   template: `
-    <ul class="collection" *ngFor="let post of posts">
+    <ul class="collection col s12 m12 l10" *ngFor="let post of posts">
       <li class="collection-item avatar">
         <img src="https://3.bp.blogspot.com/-9Iu3-Xnvtig/Wntv1F6CKII/AAAAAAAAAR0/CvCLy-jFSUIfM9vjj6UdjZigK7LKBnSPgCLcBGAs/s1600/2.jpg"
              class="circle">
         <span class="title">{{post.username}}</span>
         <p class="time">{{TimeFromNow(post.created)}}
-          <br> Country
+          <!--<br> Country-->
         </p>
       </li>
       <div class="row">
         <div class="col s12">
-          <div class="card-image">
-            <img class="postImage"
-                 src="https://3.bp.blogspot.com/-9Iu3-Xnvtig/Wntv1F6CKII/AAAAAAAAAR0/CvCLy-jFSUIfM9vjj6UdjZigK7LKBnSPgCLcBGAs/s1600/2.jpg">
-          </div>
+          <!--<div class="card-image">-->
+          <!--<img class="postImage"-->
+          <!--src="https://3.bp.blogspot.com/-9Iu3-Xnvtig/Wntv1F6CKII/AAAAAAAAAR0/CvCLy-jFSUIfM9vjj6UdjZigK7LKBnSPgCLcBGAs/s1600/2.jpg">-->
+          <!--</div>-->
           <div class="card-content">
             <p>{{post.post}}</p>
           </div>
           <div class="card-action">
-            <i (click)="LikePost(post)" class="material-icons">thumb_up</i>
+            <i (click)="LikePost(post)" [ngClass]="(!CheckInLikesArray(post.likes,user.data.username))?'notLiked':'liked'"
+               class="material-icons">thumb_up</i>
             <span class="iconSpan">
-              {{post.totalLikes}}
+              {{post.totallikes}}
             </span>
-            <i class="material-icons">chat</i>
+            <i class="material-icons" [ngClass]="(!CheckInLikesArray(post.comments,user.data.username))?'notLiked':'liked'"
+               (click)="openCommentBox(post)">chat</i>
             <span class="iconSpan">
               {{post.comments.length}}
             </span>
@@ -107,12 +112,14 @@ import io from 'socket.io-client';
 export class PostsComponent implements OnInit {
   posts = [];
   socket: any;
+  user: any;
 
-  constructor(private postService: PostService) {
+  constructor(private postService: PostService, private tokenService: TokenService, private router: Router) {
     this.socket = io('http://localhost:3000');
   }
 
   ngOnInit() {
+    this.user = this.tokenService.GetPayload();
     this.AllPosts();
 
     this.socket.on('refreshPage', (data) => {
@@ -123,15 +130,32 @@ export class PostsComponent implements OnInit {
   AllPosts() {
     this.postService.getAllPosts().subscribe((data) => {
       this.posts = data.posts;
-    });
+    },
+      err=>{
+      if(err.error.token === null){
+        this.tokenService.DeleteToken();
+        this.router.navigate(['']);
+      }
+      });
+  }
+
+  LikePost(post) {
+    this.postService.addLike(post).subscribe(data => {
+      console.log(data);
+      this.socket.emit('refresh', {});
+    }, err => console.log(err));
+  }
+
+  CheckInLikesArray(arr, username) {
+    return _.some(arr, {username: username});
   }
 
   TimeFromNow(time) {
     return moment(time).fromNow();
   }
 
-  LikePost(post) {
-
+  openCommentBox(post) {
+    this.router.navigate(['post', post._id]);
   }
 
 }
