@@ -37,11 +37,23 @@ import {Component, OnInit} from '@angular/core';
           </div>
         </a>
       </li>
-      <li class="collection-item">
-        <div>People<a href="#!" class="secondary-content"><i class="material-icons">people</i></a></div>
+      <li class="collection-item" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
+        <a [routerLink]="['/people']">
+          <div>People
+            <a href="#!" class="secondary-content">
+              <i class="material-icons">people</i>
+            </a>
+          </div>
+        </a>
       </li>
-      <li class="collection-item">
-        <div>Following<a href="#!" class="secondary-content"><i class="material-icons">people</i></a></div>
+      <li class="collection-item" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
+        <a [routerLink]="['/people','following']">
+          <div>Following
+            <a href="#!" class="secondary-content">
+              <i class="material-icons">people</i>
+            </a>
+          </div>
+        </a>
       </li>
       <li class="collection-item">
         <div>Followers<a href="#!" class="secondary-content"><i class="material-icons">people_outline</i></a></div>

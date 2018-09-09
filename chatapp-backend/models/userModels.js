@@ -15,7 +15,13 @@ const userSchema = mongoose.Schema({
           post:{type:String},
           created:{type:Date,default:Date.now()}
        }
-   ]
+   ],
+    following:[
+        {userFollowed:{type:mongoose.Schema.Types.ObjectId, ref:'User'}}
+    ],
+    followers:[
+        {followers:{type:mongoose.Schema.Types.ObjectId, ref:'User'}}
+    ]
 });
 
 module.exports = mongoose.model('User',userSchema);

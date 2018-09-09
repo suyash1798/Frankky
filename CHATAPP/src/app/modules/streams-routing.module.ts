@@ -9,6 +9,8 @@ import {AuthTabsComponent} from '../components/auth-tabs.component';
 import {StreamsComponent} from '../components/streams.component';
 import {AuthGuard} from '../guards/auth.guard';
 import {CommentsComponent} from '../components/comments.component';
+import {PeopleComponent} from '../components/people.component';
+import {FollowingComponent} from '../components/following.component';
 
 const routes: Routes = [
   {
@@ -19,6 +21,16 @@ const routes: Routes = [
   {
     path: 'post/:id',
     component: CommentsComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'people',
+    component: PeopleComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'people/following',
+    component: FollowingComponent,
     canActivate: [AuthGuard]
   }
 ];
