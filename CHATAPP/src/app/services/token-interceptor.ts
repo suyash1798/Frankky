@@ -14,7 +14,7 @@ export class TokenInterceptor implements HttpInterceptor {
 
     const headersConfig = {
       'Content-Type': 'application/json',
-      'Accept': 'application/json'
+      'Accept': 'application/json',
     };
     const token = this.tokenService.GetToken();
     if (token) {

@@ -8,7 +8,7 @@ import {TokenService} from '../services/token.service';
     <nav class="nav-extended">
       <div class="container">
         <div class="nav-wrapper">
-          <a href="#" class="brand-logo">Chat App</a>
+          <a (click)="GoToHome()" href="#" class="brand-logo">Chat App</a>
           <ul id="nav-mobile" class="right hide-on-med-and-down">
             <li><a href="sass.html">Sass</a></li>
             <li><a href="badges.html">Components</a></li>
@@ -19,7 +19,7 @@ import {TokenService} from '../services/token.service';
           <div class="nav-div">
             <img class="circle responsive-img" src="https://via.placeholder.com/350x150">
           </div>
-          <h1 class="profile-name">Markky</h1>
+          <h1 class="profile-name">{{user.data.username}}</h1>
           <p class="user-text">This is a test</p>
         </div>
       </div>
@@ -154,15 +154,21 @@ import {TokenService} from '../services/token.service';
   `]
 })
 export class ToolbarComponent implements OnInit {
-
+  user: any;
   constructor(private tokenService: TokenService, private router: Router) { }
 
   ngOnInit() {
+    this.user = this.tokenService.GetPayload();
+    console.log(this.user);
   }
 
   logout() {
     this.tokenService.DeleteToken();
-    this.router.navigate(['/']);
+    this.router.navigate(['']);
+  }
+
+  GoToHome(){
+    this.router.navigate(['streams']);
   }
 
 }

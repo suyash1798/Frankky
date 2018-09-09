@@ -28,10 +28,12 @@ export class StreamsComponent implements OnInit {
 
   token: any;
 
-  constructor() {
+  constructor(private tokenService: TokenService) {
   }
 
   ngOnInit() {
+    this.token = this.tokenService.GetPayload();
+    console.log(this.token);
   }
 
 
