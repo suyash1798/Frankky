@@ -1,4 +1,7 @@
 import {Component, OnInit} from '@angular/core';
+import {TokenService} from '../services/token.service';
+import {UsersService} from '../services/users.service';
+import io from 'socket.io-client';
 
 @Component({
   selector: 'app-following',
@@ -11,7 +14,7 @@ import {Component, OnInit} from '@angular/core';
         </div>
         <div class="col s12 m8 19">
           <div class="row">
-            <div class="col s12 m6 l4 cardDiv">
+            <div class="col s12 m6 l4 cardDiv" *ngFor="let user of following">
               <div class="card">
                 <a>
                   <div class="card-image imgDiv">
@@ -20,9 +23,9 @@ import {Component, OnInit} from '@angular/core';
                 </a>
                 <div class="card-action">
                   <h3 class="card-title">
-                    Username
+                    {{user.userFollowed.username}}
                   </h3>
-                  <button class="btn">UnFollow</button>
+                  <button class="btn" (click)="UnFollowUser(user.userFollowed)">UnFollow</button>
                 </div>
               </div>
             </div>
@@ -99,10 +102,33 @@ import {Component, OnInit} from '@angular/core';
 })
 export class FollowingComponent implements OnInit {
 
-  constructor() {
+  following = [];
+  user: any;
+
+  socket: any;
+
+  constructor(private tokenService: TokenService, private usersService: UsersService) {
+    this.socket = io('http://localhost:3000');
   }
 
   ngOnInit() {
+    this.user = this.tokenService.GetPayload();
+    this.GetUser();
+    this.socket.on('refreshPage', () => {
+      this.GetUser();
+    });
+  }
+
+  GetUser() {
+    this.usersService.GetUserById(this.user.data._id).subscribe(data => {
+      this.following = data.result.following;
+    }, err => console.log(err));
+  }
+
+  UnFollowUser(user) {
+    this.usersService.UnFollowUser(user._id).subscribe(data => {
+      console.log(data);
+    });
   }
 
 }
