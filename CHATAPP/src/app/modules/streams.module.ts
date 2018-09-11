@@ -19,6 +19,8 @@ import {RouterModule} from '@angular/router';
 import {PeopleComponent} from '../components/people.component';
 import {UsersService} from '../services/users.service';
 import { FollowingComponent } from '../components/following.component';
+import { FollowersComponent } from '../components/followers.component';
+import { NotificationsComponent } from '../components/notifications.component';
 
 @NgModule({
   imports: [
@@ -35,7 +37,9 @@ import { FollowingComponent } from '../components/following.component';
     PostsComponent,
     CommentsComponent,
     PeopleComponent,
-    FollowingComponent],
+    FollowingComponent,
+    FollowersComponent,
+    NotificationsComponent],
   exports: [StreamsComponent,
     ToolbarComponent],
   providers: [TokenService, CookieService, UsersService]

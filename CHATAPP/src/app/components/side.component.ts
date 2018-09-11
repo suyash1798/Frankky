@@ -55,14 +55,30 @@ import {Component, OnInit} from '@angular/core';
           </div>
         </a>
       </li>
-      <li class="collection-item">
-        <div>Followers<a href="#!" class="secondary-content"><i class="material-icons">people_outline</i></a></div>
+      <li class="collection-item" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
+        <a [routerLink]="['/people','followers']">
+          <div>Followers
+            <a href="#!" class="secondary-content">
+              <i class="material-icons">people_outline</i>
+            </a>
+          </div>
+        </a>
       </li>
       <li class="collection-item">
-        <div>Photos<a href="#!" class="secondary-content"><i class="material-icons">photo_library</i></a></div>
+        <div>Photos
+          <a href="#!" class="secondary-content">
+            <i class="material-icons">photo_library</i>
+          </a>
+        </div>
       </li>
-      <li class="collection-item">
-        <div>Notifications<a href="#!" class="secondary-content"><i class="material-icons">alarm</i></a></div>
+      <li class="collection-item" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact: true}">
+        <a [routerLink]="['/notifications']">
+          <div>Notifications
+            <a href="#!" class="secondary-content">
+              <i class="material-icons">alarm</i>
+            </a>
+          </div>
+        </a>
       </li>
     </ul>
   `,
@@ -91,9 +107,10 @@ import {Component, OnInit} from '@angular/core';
       font-size: 12px;
       font-weight: bold;
     }
-    .num{
+
+    .num {
       margin: 0 !important;
-      color:#64b5f6;
+      color: #64b5f6;
       font-weight: bold;
       font-size: 16px;
     }

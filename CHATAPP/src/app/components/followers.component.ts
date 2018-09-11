@@ -1,10 +1,10 @@
 import {Component, OnInit} from '@angular/core';
-import {TokenService} from '../services/token.service';
 import {UsersService} from '../services/users.service';
+import {TokenService} from '../services/token.service';
 import io from 'socket.io-client';
 
 @Component({
-  selector: 'app-following',
+  selector: 'app-followers',
   template: `
     <app-toolbar></app-toolbar>
     <div class="container" style="margin-top:30px">
@@ -13,8 +13,8 @@ import io from 'socket.io-client';
           <app-side></app-side>
         </div>
         <div class="col s12 m8 19">
-          <div class="row" *ngIf="following.length > 0">
-            <div class="col s12 m6 l4 cardDiv" *ngFor="let users of following">
+          <div class="row" *ngIf="followers.length > 0">
+            <div class="col s12 m6 l4 cardDiv" *ngFor="let user of followers">
               <div class="card">
                 <a>
                   <div class="card-image imgDiv">
@@ -22,16 +22,16 @@ import io from 'socket.io-client';
                   </div>
                 </a>
                 <div class="card-action">
-                  <h3 class="card-title" *ngIf="users.userFollowed">
-                    {{users.userFollowed.username}}
+                  <h3 class="card-title">
+                    {{user.follower.username}}
                   </h3>
-                  <button class="btn" (click)="UnFollowUser(users.userFollowed)">UnFollow</button>
+                  <!--<button class="btn" (click)="UnFollowUser(user.userFollowed)">UnFollow</button>-->
                 </div>
               </div>
             </div>
           </div>
-          <div class="row" *ngIf="following.length <= 0">
-            <h4 class="text">You are not following anyone</h4>
+          <div class="row" *ngIf="followers.length <= 0">
+            <h4 class="text">You have no follower</h4>
           </div>
         </div>
       </div>
@@ -105,18 +105,17 @@ import io from 'socket.io-client';
       text-align: center !important;
       font-size: 18px;
     }
-
   `]
 })
-export class FollowingComponent implements OnInit {
+export class FollowersComponent implements OnInit {
 
-  following = [];
+  followers = [];
   user: any;
 
   socket: any;
 
   constructor(private tokenService: TokenService, private usersService: UsersService) {
-    this.socket = io('http://localhost:3000');
+    this.socket = io('http://loaclhost:3000');
   }
 
   ngOnInit() {
@@ -129,17 +128,9 @@ export class FollowingComponent implements OnInit {
 
   GetUser() {
     this.usersService.GetUserById(this.user.data._id).subscribe(data => {
-      this.following = data.result.following;
-      console.log('following', this.following);
+      console.log('follower', data);
+      this.followers = data.result.followers;
     }, err => console.log(err));
-  }
-
-  UnFollowUser(user) {
-    console.log(user);
-    this.usersService.UnFollowUser(user._id).subscribe(data => {
-      console.log(data);
-      this.socket.emit('refresh', {});
-    });
   }
 
 }
