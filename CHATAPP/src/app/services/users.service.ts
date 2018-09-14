@@ -35,4 +35,14 @@ export class UsersService {
       userFollowed
     });
   }
+
+  MarkNotification(id, deleteValue?): Observable<any> {
+    return this.http.post(BASEURL + '/mark/' + id, {id, deleteValue});
+  }
+
+  MarkAllAsRead(): Observable<any> {
+    return this.http.post(BASEURL + '/mark-all', {
+      all: true
+    });
+  }
 }

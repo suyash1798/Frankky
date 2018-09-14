@@ -5,6 +5,7 @@
 import {Component, OnInit} from '@angular/core';
 import {TokenService} from '../services/token.service';
 import {Router} from '@angular/router';
+import * as M from 'materialize-css';
 
 @Component({
   selector: 'app-streams',
@@ -16,8 +17,25 @@ import {Router} from '@angular/router';
           <app-side></app-side>
         </div>
         <div class="col s12 m8 19">
-          <app-post-form></app-post-form>
-          <app-posts></app-posts>
+          <div class="row">
+            <div class="col s12 m12 l10">
+              <ul class="tabs">
+                <li class="tab col s6">
+                  <a href="#streams" class="active">Streams</a>
+                </li>
+                <li class="tab col s6">
+                  <a href="#top">Top Streams</a>
+                </li>
+              </ul>
+            </div>
+            <div id="streams" class="col s12">
+              <app-post-form></app-post-form>
+              <app-posts></app-posts>
+            </div>
+            <div id="top" class="col s12">
+              <app-posts></app-posts>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -33,7 +51,8 @@ export class StreamsComponent implements OnInit {
 
   ngOnInit() {
     this.token = this.tokenService.GetPayload();
-    console.log(this.token);
+    const tabs = document.querySelector('.tabs');
+    M.Tabs.init(tabs, {});
   }
 
 

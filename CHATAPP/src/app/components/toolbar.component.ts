@@ -1,6 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {TokenService} from '../services/token.service';
+import * as M from 'materialize-css';
+import {UsersService} from '../services/users.service';
+import * as moment from 'moment';
+import io from 'socket.io-client';
+import _ from 'lodash';
 
 @Component({
   selector: 'app-toolbar',
@@ -10,9 +15,26 @@ import {TokenService} from '../services/token.service';
         <div class="nav-wrapper">
           <a (click)="GoToHome()" href="#" class="brand-logo">Chat App</a>
           <ul id="nav-mobile" class="right hide-on-med-and-down">
-            <li><a href="sass.html">Sass</a></li>
-            <li><a href="badges.html">Components</a></li>
-            <li><a href="collapsible.html" (click)="logout()">Logout</a></li>
+            <li class="dropdown-button dropdown-trigger" data-target="dropdown">
+              <i class="fa fa-globe fa-1x badge"></i>
+              <span class="nav-label-icon" *ngIf="count.length > 0">{{count.length}}</span>
+              <ul id='dropdown' class='dropdown-content col s12 collection'>
+                <li class="collection-item avatar" *ngFor="let data of notifications">
+                  <img src="https://via.placeholder.com/350x150" class="circle">
+                  <span [ngClass]="data.read ? 'isRead':'unread'">{{data.message}}</span>
+                  <p class="time">{{TimeFromNow(data.created)}}
+                </li>
+                <li *ngIf="notifications.length <= 0">
+                  <p class="text">No Notification</p>
+                </li>
+                <p class="secondary-content">
+                  <a class="markAll btn" (click)="MarkAll()">Mark All As Read</a>
+                </p>
+              </ul>
+            </li>
+            <li>
+              <a (click)="logout()">Logout</a>
+            </li>
           </ul>
         </div>
         <div class="nav-content">
@@ -155,11 +177,51 @@ import {TokenService} from '../services/token.service';
 })
 export class ToolbarComponent implements OnInit {
   user: any;
-  constructor(private tokenService: TokenService, private router: Router) { }
+  notifications = [];
+  socket: any;
+  count = [];
+
+  constructor(private tokenService: TokenService, private router: Router, private usersService: UsersService) {
+    this.socket = io('http://localhost:3000');
+  }
 
   ngOnInit() {
     this.user = this.tokenService.GetPayload();
-    console.log(this.user);
+
+    const dropDownElement = document.querySelector('.dropdown-trigger');
+    M.Dropdown.init(dropDownElement, {
+
+      alignment: 'right',
+      hover: true,
+      coverTrigger: false,
+    });
+
+    this.GetUser();
+    this.socket.on('refreshPage', () => {
+      this.GetUser();
+    });
+  }
+
+  GetUser() {
+    this.usersService.GetUserById(this.user.data._id).subscribe(data => {
+        console.log(data);
+        this.notifications = data.result.notification.reverse();
+        const value = _.filter(this.notifications, ['read', false]);
+        this.count = value;
+      },
+      err => {
+        if (err.error.token == null){
+          this.tokenService.DeleteToken();
+          this.router.navigate(['']);
+        }
+        }
+        );
+  }
+
+  MarkAll() {
+    this.usersService.MarkAllAsRead().subscribe(data => {
+      this.socket.emit('refresh', {});
+    });
   }
 
   logout() {
@@ -167,8 +229,12 @@ export class ToolbarComponent implements OnInit {
     this.router.navigate(['']);
   }
 
-  GoToHome(){
+  GoToHome() {
     this.router.navigate(['streams']);
+  }
+
+  TimeFromNow(time) {
+    return moment(time).fromNow();
   }
 
 }
