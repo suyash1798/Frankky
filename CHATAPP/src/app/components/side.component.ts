@@ -3,6 +3,9 @@
 * on 2 Sept 2018
 */
 import {Component, OnInit} from '@angular/core';
+import {TokenService} from '../services/token.service';
+import {UsersService} from '../services/users.service';
+import io from 'socket.io-client';
 
 @Component({
   selector: 'app-side',
@@ -11,19 +14,22 @@ import {Component, OnInit} from '@angular/core';
       <div class="col s12 m4">
         <a>
           <span>Posts</span>
-          <p class="num">10</p>
+          <p class="num" *ngIf="userData">{{userData.posts.length}}</p>
+          <p class="num" *ngIf="!userData">0</p>
         </a>
       </div>
       <div class="col s12 m4">
         <a>
           <span>Following</span>
-          <p class="num">10</p>
+          <p class="num" *ngIf="userData">{{userData.following.length}}</p>
+          <p class="num" *ngIf="!userData">0</p>
         </a>
       </div>
       <div class="col s12 m4">
         <a>
           <span>Followers</span>
-          <p class="num">10</p>
+          <p class="num" *ngIf="userData">{{userData.followers.length}}</p>
+          <p class="num" *ngIf="!userData">0</p>
         </a>
       </div>
     </div>
@@ -118,10 +124,27 @@ import {Component, OnInit} from '@angular/core';
 })
 export class SideComponent implements OnInit {
 
-  constructor() {
+  socket: any;
+  user: any;
+  userData: any;
+
+  constructor(private tokenService: TokenService, private usersService: UsersService) {
+    this.socket = io('http://localhost:3000');
   }
 
   ngOnInit() {
+    this.user = this.tokenService.GetPayload();
+    this.GetUser();
+    this.socket.on('refreshPage', () => {
+      this.GetUser();
+    });
+  }
+
+  GetUser() {
+    this.usersService.GetUserById(this.user.data._id).subscribe(data => {
+      this.userData = data.result;
+      console.log(this.userData);
+    });
   }
 
 }

@@ -30,7 +30,7 @@ import io from 'socket.io-client';
                   <p>Country</p>
                   <button class="btn" *ngIf="!CheckInArray(userArr,user._id)" (click)="FollowUser(user)">Follow</button>
                   <button class="btn following disabled" *ngIf="CheckInArray(userArr,user._id)">Following</button>
-                  <a class="secondary-content">
+                  <a class="secondary-content" [routerLink]="['/chat',user.username]">
                     <i class="material-icons">chat</i>
                   </a>
                 </div>

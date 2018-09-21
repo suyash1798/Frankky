@@ -20,20 +20,20 @@ import * as M from 'materialize-css';
           <div class="row">
             <div class="col s12 m12 l10">
               <ul class="tabs">
-                <li class="tab col s6">
+                <li class="tab col s6" (click)="ChangeTabs('streams')">
                   <a href="#streams" class="active">Streams</a>
                 </li>
-                <li class="tab col s6">
+                <li class="tab col s6" (click)="ChangeTabs('top')">
                   <a href="#top">Top Streams</a>
                 </li>
               </ul>
             </div>
-            <div id="streams" class="col s12">
+            <div id="streams" class="col s12" *ngIf="streamsTab">
               <app-post-form></app-post-form>
               <app-posts></app-posts>
             </div>
-            <div id="top" class="col s12">
-              <app-posts></app-posts>
+            <div id="top" class="col s12" *ngIf="topStreamsTab">
+              <app-top-streams></app-top-streams>
             </div>
           </div>
         </div>
@@ -45,15 +45,29 @@ import * as M from 'materialize-css';
 export class StreamsComponent implements OnInit {
 
   token: any;
+  streamsTab = false;
+  topStreamsTab = false;
 
   constructor(private tokenService: TokenService) {
   }
 
   ngOnInit() {
+    this.streamsTab = true;
     this.token = this.tokenService.GetPayload();
     const tabs = document.querySelector('.tabs');
     M.Tabs.init(tabs, {});
   }
 
+  ChangeTabs(value) {
+    if (value === 'streams') {
+      this.streamsTab = true;
+      this.topStreamsTab = false;
+    }
+
+    if (value === 'top') {
+      this.streamsTab = false;
+      this.topStreamsTab = true;
+    }
+  }
 
 }

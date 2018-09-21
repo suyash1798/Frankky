@@ -13,6 +13,7 @@ import {PeopleComponent} from '../components/people.component';
 import {FollowingComponent} from '../components/following.component';
 import {FollowersComponent} from '../components/followers.component';
 import {NotificationsComponent} from '../components/notifications.component';
+import {ChatComponent} from '../components/chat.component';
 
 const routes: Routes = [
   {
@@ -43,6 +44,11 @@ const routes: Routes = [
   {
     path: 'notifications',
     component: NotificationsComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'chat/:name',
+    component: ChatComponent,
     canActivate: [AuthGuard]
   }
 ];

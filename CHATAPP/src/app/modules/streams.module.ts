@@ -21,6 +21,9 @@ import {UsersService} from '../services/users.service';
 import { FollowingComponent } from '../components/following.component';
 import { FollowersComponent } from '../components/followers.component';
 import { NotificationsComponent } from '../components/notifications.component';
+import { TopStreamsComponent } from '../components/top-streams.component';
+import { ChatComponent } from '../components/chat.component';
+import { MessageComponent } from '../components/message.component';
 
 @NgModule({
   imports: [
@@ -39,7 +42,10 @@ import { NotificationsComponent } from '../components/notifications.component';
     PeopleComponent,
     FollowingComponent,
     FollowersComponent,
-    NotificationsComponent],
+    NotificationsComponent,
+    TopStreamsComponent,
+    ChatComponent,
+    MessageComponent],
   exports: [StreamsComponent,
     ToolbarComponent],
   providers: [TokenService, CookieService, UsersService]
