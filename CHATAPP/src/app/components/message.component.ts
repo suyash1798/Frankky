@@ -1,65 +1,69 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {TokenService} from '../services/token.service';
+import {MessageService} from '../services/message.service';
+import {ActivatedRoute} from '@angular/router';
+import {UsersService} from '../services/users.service';
 
 @Component({
   selector: 'app-message',
   template: `
-  <div class="row">
-    <div class="col s12">
-      <div class="row">
-        <div class="card">
-          <div class="" style="background: #64b5f6 !important">
-            <div class="col s12 imgCol">
-              <img src="https://via.placeholder.com/50x50" class="circle">
-            </div>
-            <div class="row">
-              <div class="col s10 nameCol">
-                <span>Username</span>
-                <p class="isOnline">Online</p>
+    <div class="row">
+      <div class="col s12">
+        <div class="row">
+          <div class="card">
+            <div class="" style="background: #64b5f6 !important">
+              <div class="col s12 imgCol">
+                <img src="https://via.placeholder.com/50x50" class="circle">
+              </div>
+              <div class="row">
+                <div class="col s10 nameCol">
+                  <span>Username</span>
+                  <p class="isOnline">Online</p>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="col s12 rowDiv">
-      <div class="row">
-        <div class="col s12">
-          <div class="message-">
-            <div class="left">
-              <div class="chat-bubble left slide-left">
-                <div class="message">This is left message</div>
+      <div class="col s12 rowDiv">
+        <div class="row">
+          <div class="col s12">
+            <div class="message-">
+              <div class="left">
+                <div class="chat-bubble left slide-left">
+                  <div class="message">This is left message</div>
+                </div>
               </div>
+              <div class="right">
+                <div class="chat-bubble right slide-right">
+                  <div class="message">This is right message</div>
+                </div>
+              </div>
+              <div class="cf"></div>
             </div>
-          <div class="right">
-            <div class="chat-bubble right slide-right">
-              <div class="message">This is right message</div>
-            </div>
-          </div>
-          <div class="cf"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-    <div class="col s12" style="margin: 0px;">
-      <div class="row">
-        <div class="card" style="height: 55px">
-          <div class="inputRow">
-            <form>
-              <div class="input-field inputField col s10">
-                <textarea name="message" class="materialize-textarea inputBox"></textarea>
-              </div>
-              <div class="input-field col s1 emojiDiv">
-                <div class="emojiBtn">Emoji</div>
-              </div>
-              <div class="input-field col s1">
-                <button class="suffix btn">Send</button>
-              </div>
-            </form>
           </div>
         </div>
       </div>
+      <div class="col s12" style="margin: 0px;">
+        <div class="row">
+          <div class="card" style="height: 55px">
+            <div class="inputRow">
+              <form (ngSubmit)="SendMessage()">
+                <div class="input-field inputField col s10">
+                  <textarea name="message" [(ngModel)]="message" class="materialize-textarea inputBox"></textarea>
+                </div>
+                <div class="input-field col s1 emojiDiv">
+                  <div class="emojiBtn">Emoji</div>
+                </div>
+                <div class="input-field col s1">
+                  <button class="suffix btn" type="submit">Send</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
   `,
   styles: [`
     .bar-footer {
@@ -305,9 +309,43 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MessageComponent implements OnInit {
 
-  constructor() { }
+  receiver: string;
+  receivername: string;
+  user: any;
+  receiverData: any;
+  message: string;
+
+  constructor(private tokenService: TokenService,
+              private msgService: MessageService,
+              private route: ActivatedRoute,
+              private usersService: UsersService) {
+  }
 
   ngOnInit() {
+    this.user = this.tokenService.GetPayload();
+    this.route.params.subscribe(params => {
+      this.receivername = params.name;
+      this.GetUserByUsername(this.receivername);
+    });
+  }
+
+  GetUserByUsername(name) {
+    this.usersService.GetUserByName(name).subscribe(data => {
+      console.log('hi', data);
+      this.receiverData = data.result;
+    });
+  }
+
+  SendMessage() {
+    console.log('i m out');
+    if (this.message) {
+      console.log('i m in');
+      this.msgService.SendMessage(this.user.data._id, this.receiverData._id, this.receiverData.username, this.message)
+        .subscribe((data) => {
+          console.log(data);
+          this.message = '';
+        });
+    }
   }
 
 }
