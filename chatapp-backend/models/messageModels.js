@@ -6,12 +6,13 @@ const MessageSchema = mongoose.Schema({
    receiver:{type:String},
    message:[
        {
-           senderId:{type:mongoose.Schema.Types.ObjectId,ref:'Conversation'},
-           receiverId:{type:mongoose.Schema.Types.ObjectId,ref:'User'},
-           sendername:{type:String},
-           body:{type:String,default:''},
-           isRead:{type:Boolean,default:false},
-           createdAt:{type:Date,default:Date.now()}
+           senderId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+           receiverId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+           sendername: { type: String },
+           receivername: { type: String },
+           body: { type: String, default: '' },
+           isRead: { type: Boolean, default: false },
+           createdAt: { type: Date, default: Date.now() }
        }
    ]
 });

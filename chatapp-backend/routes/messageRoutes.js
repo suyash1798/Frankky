@@ -7,11 +7,14 @@ const AuthHelper = require('../Helpers/AuthHelper');
 
 router.post(
   '/chat-message/:sender_Id/:receiver_Id',
-  AuthHelper.verifyToken,(req,res,next)=>{
-      console.log("it works");
-      next();
-    },
+  AuthHelper.verifyToken,
   MessageCtrl.SendMessage
+);
+
+router.get(
+    '/chat-message/:sender_Id/:receiver_Id',
+    AuthHelper.verifyToken,
+    MessageCtrl.GetAllMessages
 );
 
 module.exports = router;

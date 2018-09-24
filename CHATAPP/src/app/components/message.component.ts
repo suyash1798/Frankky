@@ -314,6 +314,7 @@ export class MessageComponent implements OnInit {
   user: any;
   receiverData: any;
   message: string;
+  messageArray = [];
 
   constructor(private tokenService: TokenService,
               private msgService: MessageService,
@@ -329,10 +330,18 @@ export class MessageComponent implements OnInit {
     });
   }
 
+
   GetUserByUsername(name) {
     this.usersService.GetUserByName(name).subscribe(data => {
       console.log('hi', data);
       this.receiverData = data.result;
+      this.GetMessages(this.user.data._id, data.result._id);
+    });
+  }
+
+  GetMessages(senderId, receiverId) {
+    this.msgService.GetAllMessages(senderId, receiverId).subscribe(data => {
+      console.log(data);
     });
   }
 
@@ -342,7 +351,7 @@ export class MessageComponent implements OnInit {
       console.log('i m in');
       this.msgService.SendMessage(this.user.data._id, this.receiverData._id, this.receiverData.username, this.message)
         .subscribe((data) => {
-          console.log(data);
+          console.log('sended', data);
           this.message = '';
         });
     }
