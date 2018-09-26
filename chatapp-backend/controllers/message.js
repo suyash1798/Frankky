@@ -16,10 +16,11 @@ module.exports = {
                     $and:[{'participants.senderId':receiver_Id},{'participants.receiverId':sender_Id}]
                 }
             ]
-        }).select('_id')
-        if(conversation){
+        });
+        console.log('conversation',conversation);
+        if(conversation.participants[0]._id){
             const message = await Message.findOne({
-                conversationId:conversation._id
+                conversationId:conversation.participants[0]._id
             });
             res
                 .status(HttpStatus.OK)
@@ -30,6 +31,8 @@ module.exports = {
     SendMessage(req, res) {
         console.log('got',req.body);
         const {sender_Id, receiver_Id} = req.params;
+        console.log('params',req.params);
+        console.log('sample',sender_Id,receiver_Id);
         Conversation.findOne({
             $or: [
                 {
@@ -44,11 +47,13 @@ module.exports = {
                 }
             ]
         }, async (err, result) => {
-            console.log(result);
+            console.log('result',result);
             if(result){
                 if (result.participants.length > 0) {
+                    const msg = await Message.findOne({ conversationId: result.participants[0]._id });
+                    console.log( 'id',result.participants[0]._id);
                     await Message.updateOne({
-                            conversationId: result.participants[0]._id
+                            conversationId: result.participants[0]._id,
                         },
                         {
                             $push: {
@@ -78,7 +83,7 @@ module.exports = {
                 const saveConversation = await newConversation.save();
 
                 const newMessage = new Message();
-                newMessage.conversationId = saveConversation._id;
+                newMessage.conversationId = saveConversation.participants[0]._id;
                 newMessage.sender = req.user.username;
                 newMessage.receiver = req.body.receiverName;
                 newMessage.message.push({
@@ -121,7 +126,7 @@ module.exports = {
                 });
                 await newMessage
                     .save()
-                    .then(()=>res.status(HttpStatus).json({message:'Message sent'}))
+                    .then(()=>res.status(HttpStatus.OK).json({message:'Message sent'}))
                     .catch(err=>{
                         console.log('error',err);
                         res

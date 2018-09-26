@@ -1,8 +1,9 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {TokenService} from '../services/token.service';
 import {MessageService} from '../services/message.service';
 import {ActivatedRoute} from '@angular/router';
 import {UsersService} from '../services/users.service';
+import io from 'socket.io-client';
 
 @Component({
   selector: 'app-message',
@@ -17,7 +18,7 @@ import {UsersService} from '../services/users.service';
               </div>
               <div class="row">
                 <div class="col s10 nameCol">
-                  <span>Username</span>
+                  <span>{{receivername}}</span>
                   <p class="isOnline">Online</p>
                 </div>
               </div>
@@ -25,21 +26,26 @@ import {UsersService} from '../services/users.service';
           </div>
         </div>
       </div>
-      <div class="col s12 rowDiv">
+      <div class="col s12 rowDiv" ngx-auto-scroll lock-y-offset="10" observe-attributes>
         <div class="row">
           <div class="col s12">
-            <div class="message-">
-              <div class="left">
+            <div class="message" *ngFor="let message of messageArray">
+              <div class="left" *ngIf="user.data.username === message.receivername && user.data.username !== message.sendername">
                 <div class="chat-bubble left slide-left">
-                  <div class="message">This is left message</div>
+                  <div class="message">{{message.body}}</div>
                 </div>
               </div>
-              <div class="right">
+              <div class="right" *ngIf="user.data.username === message.sendername && user.data.username !== message.receivername">
                 <div class="chat-bubble right slide-right">
-                  <div class="message">This is right message</div>
+                  <div class="message">{{message.body}}</div>
                 </div>
               </div>
               <div class="cf"></div>
+            </div>
+            <div class="left" *ngIf="typing">
+              <div class="chat-bubble left slide-left">
+                <div class="message">{{receivername}} is typing</div>
+              </div>
             </div>
           </div>
         </div>
@@ -50,7 +56,7 @@ import {UsersService} from '../services/users.service';
             <div class="inputRow">
               <form (ngSubmit)="SendMessage()">
                 <div class="input-field inputField col s10">
-                  <textarea name="message" [(ngModel)]="message" class="materialize-textarea inputBox"></textarea>
+                  <textarea name="message" [(ngModel)]="message" (keypress)="IsTyping()" class="materialize-textarea inputBox"></textarea>
                 </div>
                 <div class="input-field col s1 emojiDiv">
                   <div class="emojiBtn">Emoji</div>
@@ -307,7 +313,7 @@ import {UsersService} from '../services/users.service';
 
   `]
 })
-export class MessageComponent implements OnInit {
+export class MessageComponent implements OnInit, AfterViewInit {
 
   receiver: string;
   receivername: string;
@@ -315,11 +321,15 @@ export class MessageComponent implements OnInit {
   receiverData: any;
   message: string;
   messageArray = [];
+  socket: any;
+  typingMessage;
+  typing = false;
 
   constructor(private tokenService: TokenService,
               private msgService: MessageService,
               private route: ActivatedRoute,
               private usersService: UsersService) {
+    this.socket = io('http://localhost:3000');
   }
 
   ngOnInit() {
@@ -327,7 +337,31 @@ export class MessageComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.receivername = params.name;
       this.GetUserByUsername(this.receivername);
+
+      this.socket.on('refreshPage', () => {
+        this.GetUserByUsername(this.receivername);
+      });
     });
+    this.socket.on('is_typing', data => {
+      if (data.sender === this.receivername) {
+        this.typing = true;
+      }
+    });
+
+    this.socket.on('has_stopped_typing', data => {
+      if (data.sender === this.receivername) {
+        this.typing = false;
+      }
+    });
+  }
+
+  ngAfterViewInit() {
+    const params = {
+      room1: this.user.data.username,
+      room2: this.receivername
+    };
+
+    this.socket.emit('join chat', params);
   }
 
 
@@ -342,6 +376,8 @@ export class MessageComponent implements OnInit {
   GetMessages(senderId, receiverId) {
     this.msgService.GetAllMessages(senderId, receiverId).subscribe(data => {
       console.log(data);
+      this.messageArray = data.message.message;
+      console.log('message', this.messageArray);
     });
   }
 
@@ -351,10 +387,30 @@ export class MessageComponent implements OnInit {
       console.log('i m in');
       this.msgService.SendMessage(this.user.data._id, this.receiverData._id, this.receiverData.username, this.message)
         .subscribe((data) => {
-          console.log('sended', data);
+          this.socket.emit('refresh', {});
           this.message = '';
         });
     }
+  }
+
+  IsTyping() {
+    this.socket.emit('start_typing', {
+      sender: this.user.data.username,
+      receiver: this.receivername
+    });
+
+    if (this.typingMessage) {
+      clearTimeout(this.typingMessage);
+    }
+
+    this.typingMessage = setTimeout(() => {
+      this.socket.emit('stop_typing', {
+        sender: this.user.data.username,
+        receiver: this.receivername
+
+      });
+    }, 500);
+
   }
 
 }
