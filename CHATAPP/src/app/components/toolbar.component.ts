@@ -32,9 +32,42 @@ import _ from 'lodash';
                 </p>
               </ul>
             </li>
+            <li class="dropdown-button dropdown-trigger1" data-target="dropdown1">
+              <i class="fa fa-bell fa-1x badge"></i>
+              <span class="nav-label-icon" *ngIf="msgNumber > 0">{{msgNumber}}</span>
+              <ul id='dropdown1' class='dropdown-content col s12 collection'>
+                <li class="collection-item avatar" *ngFor="let chat of chatList" [routerLink]="['/chat',chat.receiverId.username]">
+                  <div *ngIf="chat.msgId">
+                    <img src="https://via.placeholder.com/350x150" class="circle">
+                    <span class="title">
+                    {{chat.receiverId.username}}
+                    <a class="secondary-content">
+                      {{MessageDate(chat.msgId.message[chat.msgId.message.length - 1].createdAt)}}
+                    </a>
+                  </span>
+                    <p>
+                      {{chat.msgId.message[chat.msgId.message.length - 1].body}}
+                      <a class="secondary-content" *ngIf="!chat.msgId.message[chat.msgId.message.length-1].isRead">
+                        <i class="material-icons">brightness_1</i>
+                      </a>
+                      <a class="secondary-content" *ngIf="chat.msgId.message[chat.msgId.message.length-1].isRead">
+                        <i class="material-icons">panorma_fish_eye</i>
+                      </a>
+                    </p>
+                  </div>
+                </li>
+                <li *ngIf="notifications.length <= 0">
+                  <p class="text">No Notification</p>
+                </li>
+                <p class="secondary-content">
+                  <a class="markAll btn" (click)="MarkAll()">Mark All As Read</a>
+                </p>
+              </ul>
+            </li>
             <li>
               <a (click)="logout()">Logout</a>
             </li>
+
           </ul>
         </div>
         <div class="nav-content">
@@ -180,6 +213,8 @@ export class ToolbarComponent implements OnInit {
   notifications = [];
   socket: any;
   count = [];
+  chatList = [];
+  msgNumber = 0;
 
   constructor(private tokenService: TokenService, private router: Router, private usersService: UsersService) {
     this.socket = io('http://localhost:3000');
@@ -188,10 +223,18 @@ export class ToolbarComponent implements OnInit {
   ngOnInit() {
     this.user = this.tokenService.GetPayload();
 
-    const dropDownElement = document.querySelector('.dropdown-trigger');
+    const dropDownElement = document.querySelectorAll('.dropdown-trigger');
     M.Dropdown.init(dropDownElement, {
 
       alignment: 'right',
+      hover: true,
+      coverTrigger: false,
+    });
+
+    const dropDownElementTwo = document.querySelectorAll('.dropdown-trigger1');
+    M.Dropdown.init(dropDownElementTwo, {
+
+      alignment: 'left',
       hover: true,
       coverTrigger: false,
     });
@@ -208,14 +251,29 @@ export class ToolbarComponent implements OnInit {
         this.notifications = data.result.notification.reverse();
         const value = _.filter(this.notifications, ['read', false]);
         this.count = value;
+        this.chatList = data.result.chatList;
+        this.CheckIfread(this.chatList);
       },
       err => {
-        if (err.error.token == null){
+        if (err.error.token == null) {
           this.tokenService.DeleteToken();
           this.router.navigate(['']);
         }
+      }
+    );
+  }
+
+  CheckIfread(arr) {
+    const checkArr = [];
+    for (let i = 0; i < arr.length; i++) {
+      const receiver = arr[i].msgId.message[arr[i].msgId.message.length - 1];
+      if (this.router.url !== '/chat/${receiver.sendername}') {
+        if (receiver.isRead === false && receiver.receivername === this.user.username) {
+          checkArr.push(i);
+          this.msgNumber = _.sum(checkArr);
         }
-        );
+      }
+    }
   }
 
   MarkAll() {
@@ -233,8 +291,18 @@ export class ToolbarComponent implements OnInit {
     this.router.navigate(['streams']);
   }
 
+
   TimeFromNow(time) {
     return moment(time).fromNow();
+  }
+
+  MessageDate(data) {
+    return moment(data).calendar(null, {
+      sameDay: '[Today]',
+      lastDay: '[Yesterday]',
+      lastWeek: 'DD/MM/YYYY',
+      sameElse: 'DD/MM/YYYY',
+    });
   }
 
 }

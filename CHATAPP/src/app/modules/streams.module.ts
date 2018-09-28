@@ -26,6 +26,7 @@ import {ChatComponent} from '../components/chat.component';
 import {MessageComponent} from '../components/message.component';
 import {MessageService} from '../services/message.service';
 import {NgxAutoScrollModule} from 'ngx-auto-scroll';
+import {EmojiPickerModule} from 'ng2-emoji-picker';
 
 @NgModule({
   imports: [
@@ -34,7 +35,8 @@ import {NgxAutoScrollModule} from 'ngx-auto-scroll';
     ReactiveFormsModule,
     HttpClientModule,
     RouterModule,
-    NgxAutoScrollModule
+    NgxAutoScrollModule,
+    EmojiPickerModule.forRoot()
   ],
   declarations: [StreamsComponent,
     ToolbarComponent,

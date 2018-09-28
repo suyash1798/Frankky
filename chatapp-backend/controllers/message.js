@@ -3,6 +3,7 @@ const HttpStatus = require('http-status-codes');
 const Message = require('../models/messageModels');
 const Conversation = require('../models/conversationModels');
 const User = require('../models/userModels');
+const Helper = require('../Helpers/helpers');
 
 module.exports = {
     async GetAllMessages(req,res){
@@ -51,7 +52,7 @@ module.exports = {
             if(result){
                 if (result.participants.length > 0) {
                     const msg = await Message.findOne({ conversationId: result.participants[0]._id });
-                    console.log( 'id',result.participants[0]._id);
+                    Helper.updateChatList(req,msg);
                     await Message.updateOne({
                             conversationId: result.participants[0]._id,
                         },
