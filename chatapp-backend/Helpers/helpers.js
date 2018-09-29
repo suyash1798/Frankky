@@ -15,7 +15,8 @@ module.exports = {
     },
 
     updateChatList: async (req, val) => {
-        await User.update({
+        console.log('val',val);
+        await User.updateOne({
                 _id: req.user._id
             }, {
                 $pull: {
@@ -48,7 +49,7 @@ module.exports = {
                     $each: [
                         {
                             receiverId: req.params.receiver_Id,
-                            msgId: newMessage._id
+                            msgId: val._id
                         }
                     ],
                     $position: 0
@@ -63,7 +64,7 @@ module.exports = {
                         $each: [
                             {
                                 receiverId: req.user._id,
-                                msgId: newMessage._id
+                                msgId: val._id
                             }
                         ],
                         $position: 0,

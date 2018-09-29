@@ -1,9 +1,11 @@
-import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {TokenService} from '../services/token.service';
 import {MessageService} from '../services/message.service';
 import {ActivatedRoute} from '@angular/router';
 import {UsersService} from '../services/users.service';
 import io from 'socket.io-client';
+import {CaretEvent, EmojiEvent} from 'ng2-emoji-picker';
+import _ from 'lodash';
 
 @Component({
   selector: 'app-message',
@@ -19,7 +21,8 @@ import io from 'socket.io-client';
               <div class="row">
                 <div class="col s10 nameCol">
                   <span>{{receivername}}</span>
-                  <p class="isOnline">Online</p>
+                  <p class="isOnline" *ngIf="isOnline">Online</p>
+                  <p class="isOnline" *ngIf="!isOnline">Offline</p>
                 </div>
               </div>
             </div>
@@ -59,7 +62,19 @@ import io from 'socket.io-client';
                   <textarea name="message" [(ngModel)]="message" (keypress)="IsTyping()" class="materialize-textarea inputBox"></textarea>
                 </div>
                 <div class="input-field col s1 emojiDiv">
-                  <div class="emojiBtn">Emoji</div>
+                  <button class="emojiBtn" (click)="Toggled()">😄</button>
+                  <div class="emoji-content-editable"
+                       (emojiPickerCaretEmitter)="handleCurrentCaret($event)"
+                       (input)="content = $event.target.textContent"
+                       [textContent]="content"
+                       contenteditable="true"></div>
+                  <i
+                    class="emoji-toggle-button"
+                    [(emojiPickerIf)]="toggled"
+                    [emojiPickerPreserveSelection]="false"
+                    [emojiPickerDirection]="direction"
+                    [emojiPickerAutofocus]="true"
+                    (emojiPickerSelect)="handleSelection($event)"></i>
                 </div>
                 <div class="input-field col s1">
                   <button class="suffix btn" type="submit">Send</button>
@@ -313,8 +328,9 @@ import io from 'socket.io-client';
 
   `]
 })
-export class MessageComponent implements OnInit, AfterViewInit {
+export class MessageComponent implements OnInit, AfterViewInit, OnChanges {
 
+  @Input() users;
   receiver: string;
   receivername: string;
   user: any;
@@ -324,6 +340,17 @@ export class MessageComponent implements OnInit, AfterViewInit {
   socket: any;
   typingMessage;
   typing = false;
+  usersArray = [];
+  isOnline = false;
+
+  public eventMock;
+  public eventPosMock;
+
+  public direction = Math.random() > 0.5 ? (Math.random() > 0.5 ? 'top' : 'bottom') : (Math.random() > 0.5 ? 'right' : 'left');
+  public toggled = false;
+  public content = ' ';
+
+  private _lastCaretEvent: CaretEvent;
 
   constructor(private tokenService: TokenService,
               private msgService: MessageService,
@@ -342,6 +369,9 @@ export class MessageComponent implements OnInit, AfterViewInit {
         this.GetUserByUsername(this.receivername);
       });
     });
+
+    this.usersArray = this.users;
+
     this.socket.on('is_typing', data => {
       if (data.sender === this.receivername) {
         this.typing = true;
@@ -355,6 +385,7 @@ export class MessageComponent implements OnInit, AfterViewInit {
     });
   }
 
+
   ngAfterViewInit() {
     const params = {
       room1: this.user.data.username,
@@ -362,6 +393,18 @@ export class MessageComponent implements OnInit, AfterViewInit {
     };
 
     this.socket.emit('join chat', params);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log('changes', changes.users.currentValue, this.receivername);
+    if (changes.users.currentValue.length > 0) {
+      const result = _.indexOf(changes.users.currentValue, this.receivername);
+      if (result > -1) {
+        this.isOnline = true;
+      } else {
+        this.isOnline = false;
+      }
+    }
   }
 
 
@@ -391,6 +434,25 @@ export class MessageComponent implements OnInit, AfterViewInit {
           this.message = '';
         });
     }
+  }
+
+  handleSelection(event: EmojiEvent) {
+    this.content = this.content.slice(0, this._lastCaretEvent.caretOffset) + event.char + this.content.slice(this._lastCaretEvent.caretOffset);
+    this.eventMock = JSON.stringify(event);
+    this.message = this.content;
+    // this.toggled = !this.toggled;
+    this.content = '';
+  }
+
+  handleCurrentCaret(event: CaretEvent) {
+    this._lastCaretEvent = event;
+    this.eventPosMock = `{ caretOffset : ${event.caretOffset}, caretRange: Range{...}, textContent: ${event.textContent} }`;
+
+
+  }
+
+  Toggled() {
+    this.toggled = !this.toggled;
   }
 
   IsTyping() {

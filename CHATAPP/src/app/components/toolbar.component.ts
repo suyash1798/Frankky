@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {Router} from '@angular/router';
 import {TokenService} from '../services/token.service';
 import * as M from 'materialize-css';
@@ -6,6 +6,7 @@ import {UsersService} from '../services/users.service';
 import * as moment from 'moment';
 import io from 'socket.io-client';
 import _ from 'lodash';
+import {MessageService} from '../services/message.service';
 
 @Component({
   selector: 'app-toolbar',
@@ -36,7 +37,7 @@ import _ from 'lodash';
               <i class="fa fa-bell fa-1x badge"></i>
               <span class="nav-label-icon" *ngIf="msgNumber > 0">{{msgNumber}}</span>
               <ul id='dropdown1' class='dropdown-content col s12 collection'>
-                <li class="collection-item avatar" *ngFor="let chat of chatList" [routerLink]="['/chat',chat.receiverId.username]">
+                <li class="collection-item avatar" *ngFor="let chat of chatList" (click)="GoToChatPage(chat.receiverId.username)">
                   <div *ngIf="chat.msgId">
                     <img src="https://via.placeholder.com/350x150" class="circle">
                     <span class="title">
@@ -47,7 +48,8 @@ import _ from 'lodash';
                   </span>
                     <p>
                       {{chat.msgId.message[chat.msgId.message.length - 1].body}}
-                      <a class="secondary-content" *ngIf="!chat.msgId.message[chat.msgId.message.length-1].isRead">
+                      <a class="secondary-content"
+                         *ngIf="!chat.msgId.message[chat.msgId.message.length-1].isRead && chat.receiverId.username !== chat.msgId.message[chat.msgId.message.length-1].receivername">
                         <i class="material-icons">brightness_1</i>
                       </a>
                       <a class="secondary-content" *ngIf="chat.msgId.message[chat.msgId.message.length-1].isRead">
@@ -60,7 +62,7 @@ import _ from 'lodash';
                   <p class="text">No Notification</p>
                 </li>
                 <p class="secondary-content">
-                  <a class="markAll btn" (click)="MarkAll()">Mark All As Read</a>
+                  <a class="markAll btn" (click)="MarkAllMessage()">Mark All As Read</a>
                 </p>
               </ul>
             </li>
@@ -208,7 +210,9 @@ import _ from 'lodash';
 
   `]
 })
-export class ToolbarComponent implements OnInit {
+export class ToolbarComponent implements OnInit, AfterViewInit {
+
+  @Output() onlineUsers = new EventEmitter();
   user: any;
   notifications = [];
   socket: any;
@@ -216,7 +220,7 @@ export class ToolbarComponent implements OnInit {
   chatList = [];
   msgNumber = 0;
 
-  constructor(private tokenService: TokenService, private router: Router, private usersService: UsersService) {
+  constructor(private tokenService: TokenService, private router: Router, private usersService: UsersService, private msgService: MessageService) {
     this.socket = io('http://localhost:3000');
   }
 
@@ -239,9 +243,17 @@ export class ToolbarComponent implements OnInit {
       coverTrigger: false,
     });
 
+    this.socket.emit('online', {room: 'global', user: this.user.data.username});
+
     this.GetUser();
     this.socket.on('refreshPage', () => {
       this.GetUser();
+    });
+  }
+
+  ngAfterViewInit(): void {
+    this.socket.on('usersOnline', data => {
+      this.onlineUsers.emit(data);
     });
   }
 
@@ -252,6 +264,7 @@ export class ToolbarComponent implements OnInit {
         const value = _.filter(this.notifications, ['read', false]);
         this.count = value;
         this.chatList = data.result.chatList;
+        console.log('chatList', this.chatList);
         this.CheckIfread(this.chatList);
       },
       err => {
@@ -291,6 +304,20 @@ export class ToolbarComponent implements OnInit {
     this.router.navigate(['streams']);
   }
 
+  GoToChatPage(name) {
+    this.router.navigate(['chat', name]);
+    this.msgService.MarkMessages(this.user.username, name).subscribe((data) => {
+      console.log(data);
+      this.socket.emit('refresh', {});
+    });
+  }
+
+  MarkAllMessage() {
+    this.msgService.MarkAllMessages().subscribe(data => {
+      this.socket.emit('refresh', {});
+      this.msgNumber = 0;
+    });
+  }
 
   TimeFromNow(time) {
     return moment(time).fromNow();
