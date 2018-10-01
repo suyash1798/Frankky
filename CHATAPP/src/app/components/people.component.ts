@@ -4,6 +4,7 @@ import _ from 'lodash';
 import {TokenService} from '../services/token.service';
 import {Observable} from 'rxjs';
 import io from 'socket.io-client';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-people',
@@ -16,11 +17,12 @@ import io from 'socket.io-client';
         </div>
         <div class="col s12 m8 19">
           <div class="row">
-            <div class="col s12 m6 l4 cardDiv" *ngFor="let user of users">
+            <div class="col s12 m6 l4 cardDiv" *ngFor="let user of users" (click)="ViewUser(user)">
               <div class="card">
                 <a>
                   <div class="card-image imgDiv">
-                    <img class="imgCircle responsive-img" src="https://via.placeholder.com/350x150">
+                    <img class="imgCircle responsive-img"
+                         src="https://res.cloudinary.com/dkgxgbhug/image/upload/v{{user.picVersion}}/{{user.picId}}">
                   </div>
                 </a>
                 <div class="card-action">
@@ -114,7 +116,7 @@ export class PeopleComponent implements OnInit {
   loggedInUser: any;
   userArr = [];
 
-  constructor(private usersService: UsersService, private tokenService: TokenService) {
+  constructor(private usersService: UsersService, private tokenService: TokenService, private router: Router) {
     this.socket = io('http://localhost:3000');
   }
 
@@ -146,6 +148,18 @@ export class PeopleComponent implements OnInit {
     this.usersService.FollowUser(user._id).subscribe(data => {
       this.socket.emit('refresh', {});
     });
+  }
+
+  ViewUser(user) {
+    this.router.navigate([user.username]);
+    if (this.loggedInUser.username !== user.username) {
+      this.usersService.ProfileNotifications(user._id).subscribe(
+        data => {
+          this.socket.emit('refresh', {});
+        },
+        err => console.log(err)
+      );
+    }
   }
 
   CheckInArray(arr, id) {

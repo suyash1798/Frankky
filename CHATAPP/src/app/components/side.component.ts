@@ -12,7 +12,7 @@ import io from 'socket.io-client';
   template: `
     <div class="row">
       <div class="col s12 m4">
-        <a>
+        <a *ngIf="userData" [routerLink]="['',userData.username]">
           <span>Posts</span>
           <p class="num" *ngIf="userData">{{userData.posts.length}}</p>
           <p class="num" *ngIf="!userData">0</p>
@@ -70,12 +70,14 @@ import io from 'socket.io-client';
           </div>
         </a>
       </li>
-      <li class="collection-item">
-        <div>Photos
-          <a href="#!" class="secondary-content">
-            <i class="material-icons">photo_library</i>
-          </a>
-        </div>
+      <li class="collection-item" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
+        <a [routerLink]="['/images',user.data.username]">
+          <div>Photos
+            <a href="#!" class="secondary-content">
+              <i class="material-icons">photo_library</i>
+            </a>
+          </div>
+        </a>
       </li>
       <li class="collection-item" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact: true}">
         <a [routerLink]="['/notifications']">
@@ -143,7 +145,7 @@ export class SideComponent implements OnInit {
   GetUser() {
     this.usersService.GetUserById(this.user.data._id).subscribe(data => {
       this.userData = data.result;
-      console.log(this.userData);
+      console.log('UserData', this.userData);
     });
   }
 

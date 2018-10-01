@@ -16,7 +16,8 @@ import _ from 'lodash';
           <div class="card">
             <div class="" style="background: #64b5f6 !important">
               <div class="col s12 imgCol">
-                <img src="https://via.placeholder.com/50x50" class="circle">
+                <img *ngIf="receiverData" src="https://res.cloudinary.com/dkgxgbhug/image/upload/v{{receiverData.picVersion}}/{{receiverData.picId}}"
+                     class="imgCircle">
               </div>
               <div class="row">
                 <div class="col s10 nameCol">

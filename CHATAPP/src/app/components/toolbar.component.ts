@@ -21,7 +21,8 @@ import {MessageService} from '../services/message.service';
               <span class="nav-label-icon" *ngIf="count.length > 0">{{count.length}}</span>
               <ul id='dropdown' class='dropdown-content col s12 collection'>
                 <li class="collection-item avatar" *ngFor="let data of notifications">
-                  <img src="https://via.placeholder.com/350x150" class="circle">
+                  <img src="https://res.cloudinary.com/dkgxgbhug/image/upload/v{{data.senderId.picVersion}}/{{data.senderId.picId}}"
+                       class="circle">
                   <span [ngClass]="data.read ? 'isRead':'unread'">{{data.message}}</span>
                   <p class="time">{{TimeFromNow(data.created)}}
                 </li>
@@ -39,7 +40,8 @@ import {MessageService} from '../services/message.service';
               <ul id='dropdown1' class='dropdown-content col s12 collection'>
                 <li class="collection-item avatar" *ngFor="let chat of chatList" (click)="GoToChatPage(chat.receiverId.username)">
                   <div *ngIf="chat.msgId">
-                    <img src="https://via.placeholder.com/350x150" class="circle">
+                    <img src="https://res.cloudinary.com/dkgxgbhug/image/upload/v{{chat.receiverId.picVersion}}/{{chat.receiverId.picId}}"
+                         class="circle">
                     <span class="title">
                     {{chat.receiverId.username}}
                     <a class="secondary-content">
@@ -74,7 +76,7 @@ import {MessageService} from '../services/message.service';
         </div>
         <div class="nav-content">
           <div class="nav-div">
-            <img class="circle responsive-img" src="https://via.placeholder.com/350x150">
+            <img class="circle responsive-img" src="https://res.cloudinary.com/dkgxgbhug/image/upload/v{{imageVersion}}/{{imageId}}">
           </div>
           <h1 class="profile-name">{{user.data.username}}</h1>
           <p class="user-text">This is a test</p>
@@ -219,6 +221,8 @@ export class ToolbarComponent implements OnInit, AfterViewInit {
   count = [];
   chatList = [];
   msgNumber = 0;
+  imageId: any;
+  imageVersion: any;
 
   constructor(private tokenService: TokenService, private router: Router, private usersService: UsersService, private msgService: MessageService) {
     this.socket = io('http://localhost:3000');
@@ -259,12 +263,13 @@ export class ToolbarComponent implements OnInit, AfterViewInit {
 
   GetUser() {
     this.usersService.GetUserById(this.user.data._id).subscribe(data => {
-        console.log(data);
+
+        this.imageId = data.result.picId;
+        this.imageVersion = data.result.picVersion;
         this.notifications = data.result.notification.reverse();
         const value = _.filter(this.notifications, ['read', false]);
         this.count = value;
         this.chatList = data.result.chatList;
-        console.log('chatList', this.chatList);
         this.CheckIfread(this.chatList);
       },
       err => {
@@ -296,6 +301,7 @@ export class ToolbarComponent implements OnInit, AfterViewInit {
   }
 
   logout() {
+    this.socket.emit('disconnect');
     this.tokenService.DeleteToken();
     this.router.navigate(['']);
   }

@@ -18,7 +18,7 @@ import io from 'socket.io-client';
               <div class="card">
                 <a>
                   <div class="card-image imgDiv">
-                    <img class="imgCircle responsive-img" src="https://via.placeholder.com/350x150">
+                    <img class="imgCircle responsive-img" src="https://res.cloudinary.com/dkgxgbhug/image/upload/v{{user.follower.picVersion}}/{{user.follower.picId}}">
                   </div>
                 </a>
                 <div class="card-action">
