@@ -19,7 +19,7 @@ export class AppComponent implements OnInit {
       console.log(this.token);
       this.router.navigate(['/streams']);
     } else {
-      this.router.navigate(['/']);
+      this.router.navigate(['/login']);
     }
   }
 

@@ -14,6 +14,8 @@ import {FollowingComponent} from '../components/following.component';
 import {FollowersComponent} from '../components/followers.component';
 import {NotificationsComponent} from '../components/notifications.component';
 import {ChatComponent} from '../components/chat.component';
+import {ImagesComponent} from '../components/images.component';
+import {ViewUserComponent} from '../components/view-user.component';
 
 const routes: Routes = [
   {
@@ -50,6 +52,20 @@ const routes: Routes = [
     path: 'chat/:name',
     component: ChatComponent,
     canActivate: [AuthGuard]
+  },
+  {
+    path: 'images/:name',
+    component: ImagesComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: ':name',
+    component: ViewUserComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: '**',
+    redirectTo: 'streams'
   }
 ];
 

@@ -12,8 +12,7 @@ import {TokenService} from '../services/token.service';
 @Component({
   selector: 'app-signup',
   template: `
-    <div class="container">
-      <div class="row">
+      <div class="row" style="width: 43%;">
         <div class="col s10 offset-s1" id="panel">
           <div class="progress" *ngIf="showSpinner">
             <div class="indeterminate"></div>
@@ -53,25 +52,36 @@ import {TokenService} from '../services/token.service';
             <button class="btn waves-effect" id="signupbtn" [disabled]="!signupForm.valid" type="submit">
               Sign Up
             </button>
+            <button class="btn waves-effect" id="loginbtn" (click)="loginBtn()">
+              Login
+            </button>
           </form>
         </div>
       </div>
-    </div>
   `,
   styles: [`
     #panel {
       background-color: #ffffff;
+      margin-top: 21%;
     }
 
     #signupbtn {
-      float: right;
       margin-right: 10px;
-      background-color: #64b5f6;
+      background-color: black;
+      width: 100%;
       font-weight: 500;
+    }
+    
+    #loginbtn{
+      margin-right: 10px;
+      background-color: black;
+      font-weight: 500;
+      width: 100%;
+      margin-top: 10px;
     }
 
     #title {
-      background-color: #64b5f6;
+      background-color: black;
       color: white;
       padding: 8px;
       margin-top: 0px;
@@ -91,7 +101,7 @@ import {TokenService} from '../services/token.service';
     }
 
     .indeterminate {
-      background-color: #64b5f6 !important;
+      background-color: black !important;
     }
 
     .input-field {
@@ -167,6 +177,10 @@ export class SignupComponent implements OnInit {
         this.errorMessage = err.error.message;
       }
     });
+  }
+
+  loginBtn(){
+    this.router.navigate(['login']);
   }
 
 }

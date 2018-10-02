@@ -3,17 +3,17 @@ import {AfterViewInit, Component, OnInit} from '@angular/core';
 @Component({
   selector: 'app-chat',
   template: `
-    <app-toolbar></app-toolbar>
+    <app-toolbar (onlineUsers)="online($event)"></app-toolbar>
     <div class="container" style="margin-top: 30px">
       <div class="row chatRow">
         <div class="col s12">
-          <app-message></app-message>
+          <app-message [users]="online_users"></app-message>
         </div>
       </div>
     </div>
   `,
   styles: [`
-    .chatRow{
+    .chatRow {
       bottom: 0 !important;
       margin-bottom: 0px !important;
       position: relative;
@@ -24,6 +24,7 @@ import {AfterViewInit, Component, OnInit} from '@angular/core';
 export class ChatComponent implements OnInit, AfterViewInit {
 
   tabElement: any;
+  online_users = [];
 
   constructor() {
   }
@@ -34,6 +35,10 @@ export class ChatComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.tabElement.style.display = 'none';
+  }
+
+  online(event) {
+    this.online_users = event;
   }
 
 }

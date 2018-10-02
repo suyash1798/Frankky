@@ -8,11 +8,17 @@ import {CommonModule} from '@angular/common';
 import {RouterModule, Routes} from '@angular/router';
 import {AuthTabsComponent} from '../components/auth-tabs.component';
 import {AuthGuard} from '../guards/auth.guard';
+import {LoginComponent} from '../components/login.component';
+import {SignupComponent} from '../components/signup.component';
 
 const routes: Routes = [
   {
-    path: '',
-    component: AuthTabsComponent,
+    path: 'login',
+    component: LoginComponent,
+  },
+  {
+    path: 'signup',
+    component: SignupComponent
   }
 ];
 

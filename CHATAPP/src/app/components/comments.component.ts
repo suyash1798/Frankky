@@ -36,7 +36,7 @@ import * as moment from 'moment';
                   <form [formGroup]="commentForm" (ngSubmit)="AddComment()">
                     <div class="formDiv">
                       <textarea id="textarea1" formControlName="comment" class="materialize-textarea"></textarea>
-                      <button class="btn postBtn" [disabled]="!commentForm.valid">
+                      <button class="btn postBtn" style="background-color: black" [disabled]="!commentForm.valid">
                         Add Comment
                       </button>
                     </div>
@@ -59,7 +59,7 @@ import * as moment from 'moment';
   `,
   styles: [`
     .postDiv {
-      background-color: #64b5f6;
+      background-color: black;
     }
 
     form {
@@ -80,7 +80,7 @@ import * as moment from 'moment';
 
     .title {
       font-weight: bold;
-      color: #64b5f6;
+      color: black;
     }
 
     .time {

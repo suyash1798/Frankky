@@ -10,13 +10,13 @@ import * as moment from 'moment';
     <app-toolbar></app-toolbar>
     <div class="container" style="margin-top: 30px;">
       <div class="row">
-        <div class="col s12 m4 l3">
+        <div class="col s12 m4 l4">
           <app-side></app-side>
         </div>
-        <div class="col s12 m8 l9">
+        <div class="col s12 m8 l8">
           <ul class="collection col s12 m10" *ngIf="notifications.length > 0">
             <li class="collection-item avatar" *ngFor="let data of notifications">
-              <img src="https://via.placeholder.com/350x150" alt="" class="circle">
+              <img src="https://res.cloudinary.com/dkgxgbhug/image/upload/v{{data.senderId.picVersion}}/{{data.senderId.picId}}" alt="" class="circle">
               <span class="title">{{data.message}}</span>
               <a class="secondary-content">
                 <i *ngIf="!data.read" class="material-icons">brightness_1</i>

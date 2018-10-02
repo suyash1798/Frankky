@@ -15,7 +15,7 @@ import {Router} from '@angular/router';
   template: `
     <ul class="collection col s12 m12 l10" *ngFor="let post of posts">
       <li class="collection-item avatar">
-        <img src="https://3.bp.blogspot.com/-9Iu3-Xnvtig/Wntv1F6CKII/AAAAAAAAAR0/CvCLy-jFSUIfM9vjj6UdjZigK7LKBnSPgCLcBGAs/s1600/2.jpg"
+        <img src="https://res.cloudinary.com/dkgxgbhug/image/upload/v{{post.user.picVersion}}/{{post.user.picId}}"
              class="circle">
         <span class="title">{{post.username}}</span>
         <p class="time">{{TimeFromNow(post.created)}}
@@ -24,10 +24,10 @@ import {Router} from '@angular/router';
       </li>
       <div class="row">
         <div class="col s12">
-          <!--<div class="card-image">-->
-          <!--<img class="postImage"-->
-          <!--src="https://3.bp.blogspot.com/-9Iu3-Xnvtig/Wntv1F6CKII/AAAAAAAAAR0/CvCLy-jFSUIfM9vjj6UdjZigK7LKBnSPgCLcBGAs/s1600/2.jpg">-->
-          <!--</div>-->
+          <div class="card-image">
+          <img class="postImage"
+          src="https://res.cloudinary.com/dkgxgbhug/image/upload/v{{post.imgVersion}}/{{post.imgId}}">
+          </div>
           <div class="card-content">
             <p>{{post.post}}</p>
           </div>
@@ -60,7 +60,7 @@ import {Router} from '@angular/router';
 
     .title {
       font-weight: bold;
-      color: #64b5f6;
+      color: black;
     }
 
     .time {
@@ -88,7 +88,7 @@ import {Router} from '@angular/router';
     }
 
     .card-image {
-      width: 200px;
+      width: 100%;
       height: auto !important;
     }
 

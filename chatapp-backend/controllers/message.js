@@ -3,6 +3,7 @@ const HttpStatus = require('http-status-codes');
 const Message = require('../models/messageModels');
 const Conversation = require('../models/conversationModels');
 const User = require('../models/userModels');
+const Helper = require('../Helpers/helpers');
 
 module.exports = {
     async GetAllMessages(req,res){
@@ -18,7 +19,7 @@ module.exports = {
             ]
         });
         console.log('conversation',conversation);
-        if(conversation.participants[0]._id){
+        if(conversation){
             const message = await Message.findOne({
                 conversationId:conversation.participants[0]._id
             });
@@ -50,8 +51,13 @@ module.exports = {
             console.log('result',result);
             if(result){
                 if (result.participants.length > 0) {
-                    const msg = await Message.findOne({ conversationId: result.participants[0]._id });
-                    console.log( 'id',result.participants[0]._id);
+                    await Message.findOne({ conversationId: result.participants[0]._id })
+                        .then(res=>{
+                            console.log('msg',res);
+                            const msg = res;
+                            Helper.updateChatList(req,msg);
+                        });
+                    // console.log('msgpass',msg);
                     await Message.updateOne({
                             conversationId: result.participants[0]._id,
                         },
@@ -93,7 +99,7 @@ module.exports = {
                     receivername: req.body.receiverName,
                     body: req.body.message
                 });
-
+                console.log('user_id',req.user._id);
                 await User.updateOne({
                     _id:req.user._id
                 },{
@@ -135,5 +141,65 @@ module.exports = {
                     );
             }
         })
+    },
+
+    async MarkReceiverMessages(req,res){
+        const { sender, receiver } = req.params;
+        const msg = await Message.aggregate([
+            {$unwind:'$message'},
+            {
+                $match:{
+                    $and:[
+                        {'message.sendername':receiver,'message.receivername':sender}
+                    ]
+                }
+            }
+        ]);
+
+        if( msg.length > 0){
+            try{
+                msg.forEach(async (value)=>{
+                    await Message.update({
+                        'message._id':value.message._id
+                    },
+                        {
+                            $set:{'message.$.isRead':true}
+                        });
+                });
+                res.status(HttpStatus.OK).json({message:'Message maked as read'});
+            }catch (err){
+                res
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .json({message:'Error occured'});
+            }
+        }
+    },
+    async MarkAllMessages(req,res){
+        const { sender, receiver } = req.params;
+        const msg = await Message.aggregate([
+            {$match: {'message.receivername':req.user.username}},
+            {$unwind: '$message'},
+            {$match:{'message.receivername':req.user.username}},
+        ]);
+
+        console.log(msg);
+
+        if( msg.length > 0){
+            try{
+                msg.forEach(async (value)=>{
+                    await Message.update({
+                            'message._id':value.message._id
+                        },
+                        {
+                            $set:{'message.$.isRead':true}
+                        });
+                });
+                res.status(HttpStatus.OK).json({message:'Message maked as read'});
+            }catch (err){
+                res
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .json({message:'Error occured'});
+            }
+        }
     }
 };

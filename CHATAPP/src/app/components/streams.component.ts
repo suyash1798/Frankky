@@ -13,27 +13,14 @@ import * as M from 'materialize-css';
     <app-toolbar></app-toolbar>
     <div class="container" style="margin-top:30px">
       <div class="row">
-        <div class="col s12 m4 13">
+        <div class="col s12 m4 l4" style="position: sticky;top: 0">
           <app-side></app-side>
         </div>
-        <div class="col s12 m8 19">
+        <div class="col s12 m8 l8">
           <div class="row">
-            <div class="col s12 m12 l10">
-              <ul class="tabs">
-                <li class="tab col s6" (click)="ChangeTabs('streams')">
-                  <a href="#streams" class="active">Streams</a>
-                </li>
-                <li class="tab col s6" (click)="ChangeTabs('top')">
-                  <a href="#top">Top Streams</a>
-                </li>
-              </ul>
-            </div>
             <div id="streams" class="col s12" *ngIf="streamsTab">
               <app-post-form></app-post-form>
               <app-posts></app-posts>
-            </div>
-            <div id="top" class="col s12" *ngIf="topStreamsTab">
-              <app-top-streams></app-top-streams>
             </div>
           </div>
         </div>
