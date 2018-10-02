@@ -10,9 +10,8 @@ import {TokenService} from '../services/token.service';
 
 @Component({
   selector: 'app-login',
-  template: `
-    <div class="container">
-      <div class="row">
+  template: `    
+      <div class="row" style="width: 43%;">
         <div class="col s10 offset-s1" id="panel">
           <div class="progress" *ngIf="showSpinner">
             <div class="indeterminate"></div>
@@ -43,30 +42,33 @@ import {TokenService} from '../services/token.service';
             <button class="btn waves-effect" id="loginbtn" [disabled]="!loginForm.valid" type="submit">
               Login
             </button>
+            <button class="btn waves-effect" id="signupbtn" (click)="signupBtn()">
+              Signup
+            </button>
           </form>
         </div>
       </div>
-    </div>
   `,
   styles: [`
     #panel {
       background-color: #ffffff;
+      margin-top: 21%;
     }
 
     #loginbtn {
-      float: right;
       margin-right: 10px;
-      background-color: #64b5f6;
+      background-color: black;
       font-weight: 500;
+      width: 100%;
     }
 
     #title {
-      background-color: #64b5f6;
+      background-color: black;
       color: white;
       padding: 8px;
       margin-top: 0px;
       font-weight: 700;
-      text-align: center;
+      text-align: left;
     }
 
     form {
@@ -81,7 +83,7 @@ import {TokenService} from '../services/token.service';
     }
 
     .indeterminate {
-      background-color: #64b5f6 !important;
+      background-color: black !important;
     }
 
     .input-field {
@@ -103,6 +105,13 @@ import {TokenService} from '../services/token.service';
       position: relative;
       float: left;
       font-size: 15px;
+    }
+    #signupbtn{
+      margin-right: 10px;
+      background-color: black;
+      font-weight: 500;
+      width: 100%;
+      margin-top: 10px;
     }
 
   `]
@@ -142,6 +151,10 @@ export class LoginComponent implements OnInit {
         this.errorMessage = err.error.message;
       }
     });
+  }
+
+  signupBtn(){
+    this.router.navigate(['signup']);
   }
 
 }

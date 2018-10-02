@@ -23,7 +23,7 @@ const URL = 'http://localhost:3000/api/chatapp/upload-image';
                 <div class="file-field input-field">
                   <div class="row">
                     <div class="col s6">
-                      <div class="btn">
+                      <div class="btn addImageBtn">
                         <span>
                           <i class="material-icons">image</i>
                           Image
@@ -50,7 +50,7 @@ const URL = 'http://localhost:3000/api/chatapp/upload-image';
   `,
   styles: [`
     .postDiv {
-      background-color: #64b5f6;
+      background-color: black;
     }
 
     form {
@@ -63,11 +63,13 @@ const URL = 'http://localhost:3000/api/chatapp/upload-image';
 
     .addImageBtn {
       margin-bottom: 5px;
+      background-color: black;
     }
 
     .postBtn {
       float: right;
       margin-bottom: 5px;
+      background-color: black;
     }
 
     .file-field input[type='file'] {

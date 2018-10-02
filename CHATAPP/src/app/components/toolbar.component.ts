@@ -12,10 +12,10 @@ import {MessageService} from '../services/message.service';
   selector: 'app-toolbar',
   template: `
     <nav class="nav-extended">
-      <div class="container">
+      <div>
         <div class="nav-wrapper">
           <a (click)="GoToHome()" href="#" class="brand-logo">Chat App</a>
-          <ul id="nav-mobile" class="right hide-on-med-and-down">
+          <ul id="nav-mobile" class="right">
             <li class="dropdown-button dropdown-trigger" data-target="dropdown">
               <i class="fa fa-globe fa-1x badge"></i>
               <span class="nav-label-icon" *ngIf="count.length > 0">{{count.length}}</span>
@@ -74,13 +74,6 @@ import {MessageService} from '../services/message.service';
 
           </ul>
         </div>
-        <div class="nav-content">
-          <div class="nav-div">
-            <img class="circle responsive-img" src="https://res.cloudinary.com/dkgxgbhug/image/upload/v{{imageVersion}}/{{imageId}}">
-          </div>
-          <h1 class="profile-name">{{user.data.username}}</h1>
-          <p class="user-text">This is a test</p>
-        </div>
       </div>
     </nav>
   `,
@@ -92,6 +85,7 @@ import {MessageService} from '../services/message.service';
     .brand-logo {
       font-weight: 700;
       font-size: 30px;
+      left: 17%;
     }
 
     .navDiv {
@@ -163,21 +157,21 @@ import {MessageService} from '../services/message.service';
     }
 
     .title {
-      color: #64b5f6;
+      color: black;
       margin: 0px !important;
       padding: 0px !important;
       font-weight: normal;
     }
 
     .isRead {
-      color: #64b5f6;
+      color: black;
       margin: 0px !important;
       padding: 0px !important;
       font-weight: normal;
     }
 
     .unread {
-      color: #64b5f6;
+      color: black;
       margin: 0px !important;
       padding: 0px !important;
       font-weight: bold;
@@ -193,7 +187,7 @@ import {MessageService} from '../services/message.service';
     }
 
     .material-icons {
-      color: #64b5f6 !important;
+      color: black !important;
       cursor: pointer;
     }
 
@@ -203,12 +197,17 @@ import {MessageService} from '../services/message.service';
 
     .markAll {
       color: #ffffff;
-      background: #64b5f6 !important;
+      background: black !important;
     }
 
     li.dropdown-button {
       margin-left: 20px !important;
     }
+
+    .nav-wrapper{
+      background-color: black;
+    }
+    
 
   `]
 })

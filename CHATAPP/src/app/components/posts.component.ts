@@ -88,7 +88,7 @@ import {Router} from '@angular/router';
     }
 
     .card-image {
-      width: 200px;
+      width: 100%;
       height: auto !important;
     }
 

@@ -18,7 +18,7 @@ import io from 'socket.io-client';
           <div class="row">
             <div class="col s6">
               <div class="file-field input-field">
-                <div class="btn">
+                <div class="btn filebtn">
                   <span>File</span>
                   <input type="file" ng2FileSelect [uploader]="uploader" (onFileSelected)="OnFileSelected($event)">
                 </div>
@@ -29,7 +29,7 @@ import io from 'socket.io-client';
             </div>
             <div class="col s6">
               <div class="file-field input-field">
-                <button href="" class="waves-effect waves-light btn" (click)="Upload()">
+                <button href="" class="waves-effect waves-light btn uploadbtn" (click)="Upload()">
                   <i class="material-icons left">image</i>
                   Upload Image
                 </button>
@@ -53,6 +53,10 @@ import io from 'socket.io-client';
       position: relative;
       text-align: center;
       overflow: hidden;
+    }
+    
+    .filebtn ,.uploadbtn{
+      background-color: black !important;
     }
 
     .item-img-wrap img {
@@ -79,6 +83,7 @@ import io from 'socket.io-client';
       margin: 0 auto !important;
       text-align: center !important;
       margin-top: 5px !important;
+      background-color: black;
     }
 
     .active {
