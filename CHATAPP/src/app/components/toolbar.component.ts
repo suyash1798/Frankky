@@ -302,7 +302,7 @@ export class ToolbarComponent implements OnInit, AfterViewInit {
   logout() {
     this.socket.emit('disconnect');
     this.tokenService.DeleteToken();
-    this.router.navigate(['']);
+    this.router.navigate(['login']);
   }
 
   GoToHome() {

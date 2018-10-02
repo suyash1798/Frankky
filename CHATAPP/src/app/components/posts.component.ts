@@ -60,7 +60,7 @@ import {Router} from '@angular/router';
 
     .title {
       font-weight: bold;
-      color: #64b5f6;
+      color: black;
     }
 
     .time {

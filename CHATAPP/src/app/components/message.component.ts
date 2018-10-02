@@ -14,7 +14,7 @@ import _ from 'lodash';
       <div class="col s12">
         <div class="row">
           <div class="card">
-            <div class="" style="background: #64b5f6 !important">
+            <div class="" style="background: black !important">
               <div class="col s12 imgCol">
                 <img *ngIf="receiverData" src="https://res.cloudinary.com/dkgxgbhug/image/upload/v{{receiverData.picVersion}}/{{receiverData.picId}}"
                      class="imgCircle">
@@ -58,7 +58,7 @@ import _ from 'lodash';
         <div class="row">
           <div class="card" style="height: 55px">
             <div class="inputRow">
-              <form (ngSubmit)="SendMessage()">
+              <form>
                 <div class="input-field inputField col s10">
                   <textarea name="message" [(ngModel)]="message" (keypress)="IsTyping()" class="materialize-textarea inputBox"></textarea>
                 </div>
@@ -78,7 +78,7 @@ import _ from 'lodash';
                     (emojiPickerSelect)="handleSelection($event)"></i>
                 </div>
                 <div class="input-field col s1">
-                  <button class="suffix btn" type="submit">Send</button>
+                  <button class="suffix btn" style="background-color: black" (click)="SendMessage()">Send</button>
                 </div>
               </form>
             </div>
@@ -169,8 +169,8 @@ import _ from 'lodash';
     }
 
     .chat-bubble.right {
-      background: #64b5f6;
-      color: #fff;
+      background: #f1f0f0;
+      color: black;
       float: right;
       margin-right: 7px;
     }
@@ -310,6 +310,7 @@ import _ from 'lodash';
     .inputBox {
       color: white;
       padding: 10px;
+      background-color: black;
     }
 
     .input-field {
@@ -440,7 +441,7 @@ export class MessageComponent implements OnInit, AfterViewInit, OnChanges {
   handleSelection(event: EmojiEvent) {
     this.content = this.content.slice(0, this._lastCaretEvent.caretOffset) + event.char + this.content.slice(this._lastCaretEvent.caretOffset);
     this.eventMock = JSON.stringify(event);
-    this.message = this.content;
+    this.message = this.message + this.content;
     // this.toggled = !this.toggled;
     this.content = '';
   }

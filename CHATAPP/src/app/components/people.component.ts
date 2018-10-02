@@ -17,21 +17,20 @@ import {Router} from '@angular/router';
         </div>
         <div class="col s12 m8 19">
           <div class="row">
-            <div class="col s12 m6 l4 cardDiv" *ngFor="let user of users" (click)="ViewUser(user)">
+            <div class="col s12 m6 l4 cardDiv" *ngFor="let user of users" >
               <div class="card">
                 <a>
-                  <div class="card-image imgDiv">
+                  <div class="card-image imgDiv" (click)="ViewUser(user)">
                     <img class="imgCircle responsive-img"
                          src="https://res.cloudinary.com/dkgxgbhug/image/upload/v{{user.picVersion}}/{{user.picId}}">
                   </div>
                 </a>
                 <div class="card-action">
-                  <h3 class="card-title">
+                  <h3 class="card-title" (click)="ViewUser(user)">
                     {{user.username}}
                   </h3>
-                  <p>Country</p>
-                  <button class="btn" *ngIf="!CheckInArray(userArr,user._id)" (click)="FollowUser(user)">Follow</button>
-                  <button class="btn following disabled" *ngIf="CheckInArray(userArr,user._id)">Following</button>
+                  <button class="btn" style="background-color: black" *ngIf="!CheckInArray(userArr,user._id)" (click)="FollowUser(user)">Follow</button>
+                  <button class="btn following disabled" style="background-color: black" *ngIf="CheckInArray(userArr,user._id)">Following</button>
                   <a class="secondary-content" [routerLink]="['/chat',user.username]">
                     <i class="material-icons">chat</i>
                   </a>
