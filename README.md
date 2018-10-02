@@ -1,5 +1,7 @@
 # Frankky
 
+## Includes Over 7k lines of code in both typescript and javascript
+
 ## Here are some screenshots from this project
 
 ![screenshot 38](https://user-images.githubusercontent.com/33967582/46349422-9cd9f780-c66f-11e8-8148-698bd26770e2.png)
