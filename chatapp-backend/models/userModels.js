@@ -20,7 +20,23 @@ const userSchema = mongoose.Schema({
         {userFollowed:{type:mongoose.Schema.Types.ObjectId, ref:'User'}}
     ],
     followers:[
-        {followers:{type:mongoose.Schema.Types.ObjectId, ref:'User'}}
+        {follower:{type:mongoose.Schema.Types.ObjectId, ref:'User'}}
+    ],
+    notification:[
+        {
+            senderId:{type:mongoose.Schema.Types.ObjectId, ref:'User'},
+            message:{type:String},
+            viewProfile:{type:Boolean,default:false},
+            created:{type:Date,default:Date.now()},
+            read:{type:Boolean,default:false},
+            date:{type:String,default:''}
+        }
+    ],
+    chatList:[
+        {
+            receiverId:{type:mongoose.Schema.Types.ObjectId,ref:'User'},
+            msgId:{type:mongoose.Schema.Types.ObjectId,ref:'Message'}
+        }
     ]
 });
 

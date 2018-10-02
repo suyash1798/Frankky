@@ -22,7 +22,6 @@ module.exports = {
         };
 
         Post.create(body).then(async (post) => {
-            console.log('id', req.user._id)
             User.findOneAndUpdate(req.user._id, {
                 "$push": {
                     "posts": {
@@ -32,12 +31,12 @@ module.exports = {
                     }
                 }
             }, (err, doc) => {
-                if (err) console.log(err)
+
             });
             res.status(HttpStatus.OK).json({message: 'Post created', post});
         })
             .catch(err => {
-                console.log('err', err);
+
                 res
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .json({message: 'Error occured'});
@@ -48,7 +47,12 @@ module.exports = {
             const posts = await Post.find({})
                 .populate('user')
                 .sort({createdAt: -1});
-            return res.status(HttpStatus.OK).json({message: 'All posts', posts})
+
+            const top = await Post.find({totallikes:{$gte:1}})
+                .populate('user')
+                .sort({created:-1});
+
+            return res.status(HttpStatus.OK).json({message: 'All posts', posts,top})
         } catch (err) {
             return res
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)

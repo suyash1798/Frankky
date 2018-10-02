@@ -1,4 +1,4 @@
 module.exports = {
-    url: 'mongodb://suyash:suyash1798@ds159997.mlab.com:59997/node1',
+    url: 'mongodb://localhost:27017/ChatApp',
     secret:'myjsonsecret'
-}
+};

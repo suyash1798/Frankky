@@ -18,7 +18,14 @@ import {CommentsComponent} from '../components/comments.component';
 import {RouterModule} from '@angular/router';
 import {PeopleComponent} from '../components/people.component';
 import {UsersService} from '../services/users.service';
-import { FollowingComponent } from '../components/following.component';
+import {FollowingComponent} from '../components/following.component';
+import {FollowersComponent} from '../components/followers.component';
+import {NotificationsComponent} from '../components/notifications.component';
+import {TopStreamsComponent} from '../components/top-streams.component';
+import {ChatComponent} from '../components/chat.component';
+import {MessageComponent} from '../components/message.component';
+import {MessageService} from '../services/message.service';
+import {NgxAutoScrollModule} from 'ngx-auto-scroll';
 
 @NgModule({
   imports: [
@@ -26,7 +33,8 @@ import { FollowingComponent } from '../components/following.component';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    RouterModule
+    RouterModule,
+    NgxAutoScrollModule
   ],
   declarations: [StreamsComponent,
     ToolbarComponent,
@@ -35,10 +43,15 @@ import { FollowingComponent } from '../components/following.component';
     PostsComponent,
     CommentsComponent,
     PeopleComponent,
-    FollowingComponent],
+    FollowingComponent,
+    FollowersComponent,
+    NotificationsComponent,
+    TopStreamsComponent,
+    ChatComponent,
+    MessageComponent],
   exports: [StreamsComponent,
     ToolbarComponent],
-  providers: [TokenService, CookieService, UsersService]
+  providers: [TokenService, CookieService, UsersService, MessageService]
 })
 export class StreamsModule {
 }
